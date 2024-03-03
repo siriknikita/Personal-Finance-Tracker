@@ -1,5 +1,5 @@
 ## Example
-This is an example project for the university students, a good start for a great project or just to test something.
+This is my project for the personal finance tracking, a good app for tracking your personal finances and reaching new financial goals.
 
 https://exampleproject.azurewebsites.net
 
