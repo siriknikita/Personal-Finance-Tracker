@@ -1,12 +1,12 @@
 import styles from "./styles.module.css";
 
-function Dashboard() {
+function Dashboard(userDetails) {
     const user = userDetails.user;
     return (
             <div className={styles.dashboard}>
-    <header className={styles.menu-wrap}>
+    <header className={styles.menu_wrap}>
         <figure className={styles.user}>
-        <div className={styles.user-avatar}>
+        <div className={styles.user_avatar}>
             <img src={user.picture} alt={user.name} />
         </div>
         <figcaption>{user.name}</figcaption>
@@ -91,14 +91,14 @@ function Dashboard() {
         </section>
         </nav>
     </header>
-    <main className={styles.content-wrap}>
-        <header className={styles.content-head}>
+    <main className={styles.content_wrap}>
+        <header className={styles.content_head}>
         <h1>Dashboard</h1>
         </header>
         <div className={styles.content}>
-        <section className={styles.info-boxes}>
-            <div className={styles.info-box}>
-            <div className={styles.box-icon}>
+        <section className={styles.info_boxes}>
+            <div className={styles.info_box}>
+            <div className={styles.box_icon}>
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={24}
@@ -109,29 +109,29 @@ function Dashboard() {
                 <path d="M10.381 12.309l3.172 1.586a1 1 0 0 0 1.305-.38l3-5-1.715-1.029-2.523 4.206-3.172-1.586a1.002 1.002 0 0 0-1.305.38l-3 5 1.715 1.029 2.523-4.206z" />
                 </svg>
             </div>
-            <div className={styles.box-content}>
+            <div className={styles.box_content}>
                 <span className={styles.big}>44.51</span>
                 Money spent total ($)
             </div>
             </div>
-            <div className={styles.info-box}>
-            <div className={styles.box-icon}>
+            <div className={styles.info_box}>
+            <div className={styles.box_icon}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M14,11H10a2,2,0,0,1,0-4h5a1,1,0,0,1,1,1,1,1,0,0,0,2,0,3,3,0,0,0-3-3H13V3a1,1,0,0,0-2,0V5H10a4,4,0,0,0,0,8h4a2,2,0,0,1,0,4H9a1,1,0,0,1-1-1,1,1,0,0,0-2,0,3,3,0,0,0,3,3h2v2a1,1,0,0,0,2,0V19h1a4,4,0,0,0,0-8Z" />
                 </svg>
             </div>
-            <div className={styles.box-content}>
+            <div className={styles.box_content}>
                 <span className={styles.big}>13.57</span>
                 Money spent (this week)
             </div>
             </div>
-            <div className={styles.info-box}>
-            <div className={styles.box-icon}>
+            <div className={styles.info_box}>
+            <div className={styles.box_icon}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z" />
                 </svg>
             </div>
-            <div className={styles.box-content}>
+            <div className={styles.box_content}>
                 <span className={styles.big}>18</span>
                 Consistency days
             </div>
