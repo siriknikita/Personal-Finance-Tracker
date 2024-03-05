@@ -23,5 +23,5 @@ Add your task decomposition here.
 - Implement user authentication via Google account ✔️
 - Set up basic project structure ✔️
 - Develop initial dashboard layout.
-- Create database schema for user data storage. 
+- Create database schema for user data storage ✔️
 - Set up Azure environment for deployment.
