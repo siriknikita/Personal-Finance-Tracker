@@ -4,6 +4,7 @@ import axios from "axios";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard"
 import "./App.css";
 
 function App() {
@@ -39,6 +40,10 @@ function App() {
 				<Route
 					path="/signup"
 					element={user ? <Navigate to="/" /> : <Signup />}
+				/>
+				<Route
+					path="/dashboard"
+					element={user ? <Dashboard user={user} /> : <Dashboard />}
 				/>
 			</Routes>
 		</div>
