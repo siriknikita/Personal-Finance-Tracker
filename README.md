@@ -22,6 +22,6 @@ Add your task decomposition here.
 ### Week 1:
 - Implement user authentication via Google account ✔️
 - Set up basic project structure ✔️
-- Develop initial dashboard layout.
+- Develop initial dashboard layout ✔️
 - Create database schema for user data storage ✔️
 - Set up Azure environment for deployment.
