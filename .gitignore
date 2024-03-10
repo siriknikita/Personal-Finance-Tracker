@@ -3,3 +3,5 @@
 
 /server/node_modules
 /server/.env
+
+database_creation.sql

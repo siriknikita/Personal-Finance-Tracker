@@ -1,4 +1,4 @@
-## Example
+## Siryk.University.PersonalFinanceTracker
 This is my project for the personal finance tracking, a good app for tracking your personal finances and reaching new financial goals.
 
 https://exampleproject.azurewebsites.net
