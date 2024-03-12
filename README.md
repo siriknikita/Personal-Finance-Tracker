@@ -11,7 +11,7 @@ nikitasirik2@gmail.com
 https://t.me/trdng2
 
 ## Getting Started
-### Getting Started with Local Setup for Google Calendar
+### Getting Started with Local Setup for Personal Finance Tracker
 Welcome to Personal Finance Tracker! This guide will walk you through the process of setting up Personal Finance Tracker locally on your computer.
 #### Prerequisites
 Before you begin, ensure you have the following:
