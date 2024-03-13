@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require('./db')
+const bodyParser = require("body-parser")
 const passport = require("passport");
 const authRoute = require("./routes/auth");
 const cookieSession = require("cookie-session");
@@ -16,6 +17,7 @@ app.use(
 	})
 );
 
+app.use(bodyParser.json())
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -28,11 +30,11 @@ app.use(
 );
 
 app.post("/api/signup", (req, res) => {
-	const { username, email, password } = req.body;
+	const { username, email, passwordHash } = req.body;
 
 	db.query(
 		"INSERT INTO Users (Username, Email, PasswordHash) VALUES (?, ?, ?)",
-		[username, email, password],
+		[username, email, passwordHash],
 		(error, result) => {
 			if (error) {
 				console.error("Error signing up user:", error);

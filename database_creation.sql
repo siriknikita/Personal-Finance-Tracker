@@ -37,3 +37,5 @@ CREATE TABLE IF NOT EXISTS Transactions (
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
+
+SELECT * FROM Users;

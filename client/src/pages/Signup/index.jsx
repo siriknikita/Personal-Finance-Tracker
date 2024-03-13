@@ -64,11 +64,11 @@ function Signup() {
 						type="password"
 						className={styles.input}
 						placeholder="Password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
+						value={passwordHash}
+						onChange={(e) => setPasswordHash(e.target.value)}
 						required
 						/>
-						<button type="submit" className={styles.btn}>Sign Up</button>
+						<button type="submit" className={styles.btn}><Link to="/login">Sign Up</Link></button>
 					</form>
 					<p className={styles.text}>or</p>
 					<button className={styles.google_btn} onClick={googleAuth}>
