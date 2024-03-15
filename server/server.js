@@ -23,7 +23,7 @@ app.use(passport.session());
 
 app.use(
 	cors({
-		origin: "http://localhost:3000",
+		origin: "https://personal-finance-tracker.azurewebsites.net",
 		methods: "GET,POST,PUT,DELETE",
 		credentials: true,
 	})
