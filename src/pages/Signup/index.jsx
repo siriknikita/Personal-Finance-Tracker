@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styles from "./styles.module.css";
 
@@ -6,6 +6,7 @@ function Signup() {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [passwordHash, setPasswordHash] = useState("");
+	const navigate = useNavigate();
 
 	const googleAuth = () => {
 		window.open(
@@ -26,6 +27,7 @@ function Signup() {
 			});
 			if (responce.ok) {
 				console.log("User signed up successfully!");
+				navigate("/dashboard");
 			} else {
 				console.error("Signup failed:", await responce.text());
 			}
@@ -68,7 +70,8 @@ function Signup() {
 						onChange={(e) => setPasswordHash(e.target.value)}
 						required
 						/>
-						<button type="submit" className={styles.btn}><Link to="/login">Sign Up</Link></button>
+						<br />
+						<button type="submit" className={styles.btn}>Sign Up</button>
 					</form>
 					<p className={styles.text}>or</p>
 					<button className={styles.google_btn} onClick={googleAuth}>

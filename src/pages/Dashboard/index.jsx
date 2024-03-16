@@ -1,15 +1,25 @@
 import styles from "./styles.module.css";
+import { useEffect, useState } from "react"
+import { useLocation } from 'react-router-dom'
 
-function Dashboard(userDetails) {
-    const user = userDetails.user;
+function Dashboard() {
+    const email = useLocation();
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        fetch(`/api/get_user/${email}`)
+        .then(res => res.json())
+        .then(user => setUser(user))
+    }, [])
+
     return (
             <div className={styles.dashboard}>
     <header className={styles.menu_wrap}>
         <figure className={styles.user}>
-        <div className={styles.user_avatar}>
-            <img src={user.picture} alt={user.name} />
-        </div>
-        <figcaption>{user.name}</figcaption>
+            <div className={styles.user_avatar}>
+                <img src={user.picture} alt={user.Username} />
+            </div>
+            <figcaption>{user.Username}</figcaption>
         </figure>
         <nav>
         <section className={styles.discover}>

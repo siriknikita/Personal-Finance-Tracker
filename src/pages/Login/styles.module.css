@@ -21,6 +21,8 @@
 
 .form_container {
     display: flex;
+    vertical-align: middle;
+    text-align: center;
     margin-top: 45px;
     width: 800px;
     height: 450px;

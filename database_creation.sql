@@ -39,3 +39,5 @@ CREATE TABLE IF NOT EXISTS Transactions (
 );
 
 SELECT * FROM Users;
+SELECT count(*) FROM Users WHERE Email='new_user@gmail.com' AND PasswordHash='new_user';
+DELETE FROM Users WHERE UserID = 4;
