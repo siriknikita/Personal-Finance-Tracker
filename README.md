@@ -42,14 +42,14 @@ Before you begin, ensure you have the following:
 - Set up basic project structure ✔️
 - Develop initial dashboard layout ✔️
 - Create database schema for user data storage ✔️
-- Set up Azure environment for deployment ❌
+- Set up Azure environment for deployment ✔️
 
 ### Week 2:
-- Finalize user authentication flow.
+- Finalize user authentication flow ✔️
 - Implement expense tracking functionality.
 - Develop basic income management features.
 - Design initial budgeting tools interface.
-- Set up CI/CD pipeline for automated deployment.
+- Set up CI/CD pipeline for automated deployment ✔️
 
 ### Week 3:
 - Complete income management module.

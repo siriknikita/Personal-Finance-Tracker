@@ -26,7 +26,7 @@ function Login() {
 			});
 			if (response.ok) {
 				console.log("User logged in successfully!");
-				navigate("/dashboard", {email: email})
+				navigate("/dashboard", { state: { userEmail: email } });
 			} else {
 				console.error("Login failed:", await response.text());
 			}

@@ -27,7 +27,7 @@ function Signup() {
 			});
 			if (responce.ok) {
 				console.log("User signed up successfully!");
-				navigate("/dashboard");
+				navigate("/dashboard", { state: { userEmail: email } });
 			} else {
 				console.error("Signup failed:", await responce.text());
 			}

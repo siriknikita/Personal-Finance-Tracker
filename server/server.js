@@ -71,29 +71,30 @@ app.post("/api/login", (req, res) => {
 	);
 });
 
-app.get("/api/get_user/:email", (req, res) => {
-	const { email } = req.params.email;
-
-	console.log(`Email passed: ${email}`)
+app.get("/api/get_user/email/:userEmail", (req, res) => {
+    const parseObj = JSON.stringify(req.params);
+	const email = JSON.parse(parseObj)['userEmail'];
+	
 	db.query(
-		"SELECT * FROM Users WHERE Email=(?)",
-		[email],
-		(error, result) => {
-			if (error) {
-				console.error("Error getting a user:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
+        "SELECT * FROM Users WHERE Email = (?)",
+        [email],
+        (error, result) => {
+            if (error) {
+                console.error("Error getting a user:", error);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
 			if (result) {
-				console.log("User found successfully!");
-				res.send(result[0]);
-			} else {
-				console.error("No user was found!");
-				res.status(500).json({ error: "User not found error!" });
-				return;
-			}
-		}
-	);
+                console.log("User found successfully!");
+				const userObj = JSON.stringify(result[0])
+				const user = JSON.parse(userObj);
+				res.send(user);
+            } else {
+                console.error("No user was found!");
+                res.status(404).json({ error: "User not found error!" });
+            }
+        }
+    );
 });
 
 app.use("/auth", authRoute);

@@ -1,12 +1,15 @@
+DROP DATABASE PFT;
+CREATE DATABASE PFT;
 USE PFT;
 
 -- Create the Users table
 CREATE TABLE IF NOT EXISTS Users (
     UserID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(255) NOT NULL,
-    FullName VARCHAR(255) NOT NULL,
     Email VARCHAR(255) NOT NULL UNIQUE,
     PasswordHash VARCHAR(255) NOT NULL,
+    TotalSpent DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    WeeklySpent DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     RegistrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -39,5 +42,3 @@ CREATE TABLE IF NOT EXISTS Transactions (
 );
 
 SELECT * FROM Users;
-SELECT count(*) FROM Users WHERE Email='new_user@gmail.com' AND PasswordHash='new_user';
-DELETE FROM Users WHERE UserID = 4;
