@@ -35,10 +35,11 @@ CREATE TABLE IF NOT EXISTS Transactions (
     UserID INT,
     Amount DECIMAL(10, 2) NOT NULL,
     CategoryID INT,
-    Description TEXT,
     TransactionDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
 SELECT * FROM Users;
+INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (1, 12.39, 1);
+SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = 1;

@@ -237,3 +237,14 @@ body {
 	}
 
 }
+
+.input {
+    width: 320px;
+    height: 35px;
+    padding: 5px;
+    margin: 5px 0;
+    outline: none;
+    border: 1px solid #2c444e;
+    border-radius: 2px;
+    font-size: 13px;
+}

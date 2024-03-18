@@ -1,12 +1,17 @@
 import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom'
+import Popup from "../../components/Popup";
 
 function Dashboard() {
     const location = useLocation();
     const email = location.state.userEmail;
     const [ user, setUser ] = useState({});
-    
+    const [ transaction, setTransaction ] = useState({});
+    const [ buttonPopup, setButtonPopup ] = useState(false);
+    const [ currentAmount, setCurrentAmount ] = useState(0.0);
+    const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
+
     const getUserByEmail = async (givenEmail) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get_user/email/${givenEmail}`);
@@ -25,6 +30,46 @@ function Dashboard() {
         };
         fetchUser();
     }, [email]);
+
+    const getUserTransactionByID = async (userID) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get_data/userID/${userID}/transactions`);
+            const transaction = await response.json();
+            console.log("Transaction retrieved successfully:", transaction);
+            return transaction;
+        } catch (error) {
+            console.error("Error retrieving transaction:", error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchTransaction = async () => {
+            const fetchedTransaction = await getUserTransactionByID(user["UserID"]);
+            setTransaction(fetchedTransaction);
+        };
+        fetchTransaction();
+    }, [user["UserID"]]);
+
+    const handleSubmit = async (e) => {
+		e.preventDefault();
+		try {
+            const userID = user['UserID']
+			const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
+			});
+			if (response.ok) {
+				console.log("Transaction added successfully!");
+			} else {
+				console.error("Transaction adding failed:", await response.text());
+			}
+		} catch (error) {
+			console.error("Error adding a new transaction:", error);
+		}
+	};
 
     return (
     <div className={styles.dashboard}>
@@ -90,6 +135,42 @@ function Dashboard() {
                         <path d="M21 4H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 14H4V9.227l7.335 6.521a1.003 1.003 0 0 0 1.33-.001L20 9.227V18zm0-11.448l-8 7.11-8-7.111V6h16v.552z" />
                     </svg>
                     Messages
+                </li>
+                <li>
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-plus-circle"
+                        viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                    <button onClick={() => setButtonPopup(true)}>Add transaction</button>
+                    <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+                        <h3>Add a new transaction!</h3>
+                        <form onSubmit={handleSubmit}>
+                            <input 
+                            type="number"
+                            className={styles.input}
+                            placeholder="Amount"
+                            value={currentAmount}
+                            onChange={(e) => setCurrentAmount(e.target.value)}
+                            required
+                            />
+                            <input
+                            type="number"
+                            className={styles.input}
+                            placeholder="CategoryID"
+                            value={passwordHash}
+                            onChange={(e) => setPasswordHash(e.target.value)}
+                            required
+                            />
+                            <br />
+                            <button className={styles.btn}>Submit</button>
+                        </form>
+                    </Popup>
                 </li>
                 </ul>
             </section>

@@ -86,7 +86,7 @@ app.get("/api/get_user/email/:userEmail", (req, res) => {
             }
 			if (result) {
                 console.log("User found successfully!");
-				const userObj = JSON.stringify(result[0])
+				const userObj = JSON.stringify(result[0]);
 				const user = JSON.parse(userObj);
 				res.send(user);
             } else {
@@ -95,6 +95,59 @@ app.get("/api/get_user/email/:userEmail", (req, res) => {
             }
         }
     );
+});
+
+app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
+	const parseObj = JSON.stringify(req.params);
+	const userIDString = JSON.parse(parseObj)['userID'];
+	const userID = parseInt(userIDString, 10);
+
+	console.log('UserID');
+	console.log(userID);
+
+	db.query(
+		"SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = (?)",
+		[userID],
+		(error, result) => {
+			if (error) {
+				console.error("Error getting a data about transaction:", error);
+				res.status(500).json({ error: "Internal server error" });
+				return;
+			}
+			if (result) {
+				console.log("Transaction obtained successfully!");
+				res.send(result);
+			} else {
+				console.error("No transaction was fonud!");
+				res.status(404).json({ error: "No transaction was found!" });
+			}
+		}
+	);
+});
+
+
+app.post("/api/add/transaction", (req, res) => {
+	const { userID, currentAmount, currentCategoryID } = req.body;
+
+	db.query(
+		"INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (?, ?, ?);",
+		[userID, currentAmount, currentCategoryID],
+		(error, result) => {
+			if (error) {
+				console.error("Error adding a new transaction:", error);
+				res.status(500).json({ error: "Internal server error" });
+				return;
+			}
+			if (result) {
+				console.log("Transaction added successfully!");
+				res.status(200).json({ message: "Transaction added successfully!" });
+			} else {
+				console.error("No transaction was fonud!");
+				res.status(500).json({ error: "No transaction was found!" });
+				return;
+			}
+		}
+	);
 });
 
 app.use("/auth", authRoute);
