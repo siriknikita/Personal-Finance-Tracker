@@ -54,7 +54,7 @@ function Dashboard() {
 		e.preventDefault();
 		try {
             const userID = user['UserID']
-			const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+			const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add/transaction`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -151,22 +151,34 @@ function Dashboard() {
                     <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
                         <h3>Add a new transaction!</h3>
                         <form onSubmit={handleSubmit}>
-                            <input 
-                            type="number"
-                            className={styles.input}
-                            placeholder="Amount"
-                            value={currentAmount}
-                            onChange={(e) => setCurrentAmount(e.target.value)}
-                            required
-                            />
-                            <input
-                            type="number"
-                            className={styles.input}
-                            placeholder="CategoryID"
-                            value={passwordHash}
-                            onChange={(e) => setPasswordHash(e.target.value)}
-                            required
-                            />
+                            <label>
+                                Enter amount of money ($):
+                                <input 
+                                type="number"
+                                className={styles.input}
+                                placeholder="Amount"
+                                value={currentAmount}
+                                onChange={(e) => setCurrentAmount(e.target.value)}
+                                required
+                                />
+                            </label>
+                            <br />
+                            <label>
+                                Choose a category:
+                                <select 
+                                    value={currentCategoryID}
+                                    onChange={(e) => setCurrentCategoryID(e.target.value)}
+                                >
+                                    <option value="1">Groceries</option>
+                                    <option value="2">Utilities</option>
+                                    <option value="3">Rent</option>
+                                    <option value="4">Entertainment</option>
+                                    <option value="5">Healthcare</option>
+                                    <option value="6">Transportation</option>
+                                    <option value="7">Other</option>
+                                </select>
+                            </label>
+                            <br />
                             <br />
                             <button className={styles.btn}>Submit</button>
                         </form>

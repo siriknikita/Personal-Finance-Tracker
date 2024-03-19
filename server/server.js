@@ -102,9 +102,6 @@ app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
 	const userIDString = JSON.parse(parseObj)['userID'];
 	const userID = parseInt(userIDString, 10);
 
-	console.log('UserID');
-	console.log(userID);
-
 	db.query(
 		"SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = (?)",
 		[userID],
@@ -128,9 +125,9 @@ app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
 
 app.post("/api/add/transaction", (req, res) => {
 	const { userID, currentAmount, currentCategoryID } = req.body;
-
+	
 	db.query(
-		"INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (?, ?, ?);",
+		"INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (?, ?, ?)",
 		[userID, currentAmount, currentCategoryID],
 		(error, result) => {
 			if (error) {

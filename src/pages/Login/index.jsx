@@ -54,7 +54,7 @@ function Login() {
 						required
 						/>
 						<input
-						type="text"
+						type="password"
 						className={styles.input}
 						placeholder="Password"
 						value={passwordHash}
