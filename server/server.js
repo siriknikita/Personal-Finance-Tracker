@@ -164,11 +164,15 @@ app.get("/api/test/userAuth/email/:Email/password/:Password", (req, res) => {
 		!emailString.includes("@")
 		) {
 		return new Promise((resolve, reject) => {
-			resolve(false);
+			setTimeout(() => {
+				resolve(false);
+			}, 100);
 		})
 	} else {
 		return new Promise((resolve, reject) => {
-			resolve(true);
+			setTimeout(() => {
+				resolve(true);
+			}, 100);
 		})
 	}
 });
