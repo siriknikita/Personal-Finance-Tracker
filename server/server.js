@@ -122,7 +122,6 @@ app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
 	);
 });
 
-
 app.post("/api/add/transaction", (req, res) => {
 	const { userID, currentAmount, currentCategoryID } = req.body;
 	
@@ -145,6 +144,33 @@ app.post("/api/add/transaction", (req, res) => {
 			}
 		}
 	);
+});
+
+app.get("/api/test/userAuth/email/:Email/password/:Password", (req, res) => {
+	const parseObj = JSON.stringify(req.params);
+	const emailString = JSON.parse(parseObj)['Email'];
+	const passwordString = JSON.parse(parseObj)['Password'];
+
+
+	console.log('Email:');
+	console.log(emailString);
+	console.log('Password:');
+	console.log(passwordString);
+
+	const specialSymbols = "-";
+	
+	if (passwordString.length < 12 &&
+		!passwordString.includes(specialSymbols) &&
+		!emailString.includes("@")
+		) {
+		return new Promise((resolve, reject) => {
+			resolve(false);
+		})
+	} else {
+		return new Promise((resolve, reject) => {
+			resolve(true);
+		})
+	}
 });
 
 app.use("/auth", authRoute);

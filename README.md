@@ -56,7 +56,7 @@ Before you begin, ensure you have the following:
 - Enhance dashboard with data visualization components.
 - Implement basic goal setting functionality.
 - Begin work on notification system.
-- Write unit tests for authentication and basic functionalities.
+- Write unit tests for authentication and basic functionalities ✔️
 
 ### Week 4:
 - Finalize budgeting tools, including allocation and tracking features.
