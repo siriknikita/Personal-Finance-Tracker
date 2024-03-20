@@ -41,5 +41,12 @@ CREATE TABLE IF NOT EXISTS Transactions (
 );
 
 SELECT * FROM Users;
+SELECT * FROM Transactions;
+SELECT Amount FROM Transactions WHERE UserID = 1;
+SELECT * FROM Categories;
+UPDATE Transactions
+SET UserID = 1
+WHERE TransactionID = 12;
+
 INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (1, 12.39, 1);
 SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = 1;

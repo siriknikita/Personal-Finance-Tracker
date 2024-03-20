@@ -2,15 +2,22 @@ import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom'
 import Popup from "../../components/Popup";
+import PlotStatistics from "../../components/Plot";
+import ToggleDisplay from "react-toggle-display";
 
 function Dashboard() {
     const location = useLocation();
     const email = location.state.userEmail;
     const [ user, setUser ] = useState({});
-    const [ transaction, setTransaction ] = useState({});
-    const [ buttonPopup, setButtonPopup ] = useState(false);
+    const [ userID, setUserID ] = useState(1);
+    
     const [ currentAmount, setCurrentAmount ] = useState(0.0);
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
+
+    const [ moneySpent, setMoneySpent ] = useState([]);
+    const [ transactionCategories, setTransactionCategories ] = useState({});
+    const [ showDashboard, setShowDashboard ] = useState(true)
+    const [ isOpen, setIsOpen ] = useState(false);
 
     const getUserByEmail = async (givenEmail) => {
         try {
@@ -27,13 +34,14 @@ function Dashboard() {
         const fetchUser = async () => {
             const fetchedUser = await getUserByEmail(email);
             setUser(fetchedUser);
+            setUserID(fetchedUser['userID']);
         };
         fetchUser();
     }, [email]);
 
-    const getUserTransactionByID = async (userID) => {
+    const getUserTransactionCategoriesByID = async (givenUserID) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get_data/userID/${userID}/transactions`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${givenUserID}`);
             const transaction = await response.json();
             console.log("Transaction retrieved successfully:", transaction);
             return transaction;
@@ -43,33 +51,67 @@ function Dashboard() {
     };
 
     useEffect(() => {
-        const fetchTransaction = async () => {
-            const fetchedTransaction = await getUserTransactionByID(user["UserID"]);
-            setTransaction(fetchedTransaction);
+        const fetchTransactionCategory = async () => {
+            const fetchedTransactionCategories = await getUserTransactionCategoriesByID(userID);
+            console.log(fetchedTransactionCategories);
+            setTransactionCategories(fetchedTransactionCategories);
         };
-        fetchTransaction();
-    }, [user["UserID"]]);
+        fetchTransactionCategory();
+    }, []);
 
+    const getMoneySpentByID = async (givenUserID) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/moneySpent/${givenUserID}`);
+            const moneyRetrieved = await response.json();
+            console.log("Money retrieved successfully:", moneyRetrieved);
+            return moneyRetrieved;
+        } catch (error) {
+            console.error("Error retrieving money:", error);
+        }
+    };
+    
+    useEffect(() => {
+        const fetchMoney = async () => {
+            const fetchedMoney = await getMoneySpentByID(userID);
+            setMoneySpent(fetchedMoney);
+        };
+        fetchMoney();
+    }, []);
+    
     const handleSubmit = async (e) => {
-		e.preventDefault();
-		try {
-            const userID = user['UserID']
-			const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add/transaction`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
-			});
-			if (response.ok) {
-				console.log("Transaction added successfully!");
-			} else {
-				console.error("Transaction adding failed:", await response.text());
-			}
-		} catch (error) {
-			console.error("Error adding a new transaction:", error);
-		}
-	};
+        e.preventDefault();
+        try {
+            const userID = user.UserID;
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add/transaction`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
+            });
+            if (response.ok) {
+                console.log("Transaction added successfully!");
+                setMoneySpent([...moneySpent, currentAmount]);
+                setTransactionCategories([...transactionCategories, currentCategoryID]);
+                setIsOpen(false);
+                setShowDashboard(true);
+            } else {
+                console.error("Transaction adding failed:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error adding a new transaction:", error);
+        }
+    };
+
+    const handlePopupSubmit = () => {
+        setShowDashboard(false)
+        setIsOpen(true)
+    };
+
+    const handleClose = () => {
+        setIsOpen(false)
+        setShowDashboard(true)
+    };
 
     return (
     <div className={styles.dashboard}>
@@ -147,8 +189,8 @@ function Dashboard() {
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                     </svg>
-                    <button onClick={() => setButtonPopup(true)}>Add transaction</button>
-                    <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+                    <button onClick={handlePopupSubmit}>Add transaction</button>
+                    <Popup trigger={isOpen} setTrigger={setIsOpen} onClose={handleClose}>
                         <h3>Add a new transaction!</h3>
                         <form onSubmit={handleSubmit}>
                             <label>
@@ -220,11 +262,14 @@ function Dashboard() {
                         </svg>
                     </div>
                     <div className={styles.box_content}>
-                        <span className={styles.big}>{user['WeeklySpent']}</span>
+                        <span className={styles.big}>{user.WeeklySpent}</span>
                         Money spent (this week)
                     </div>
                 </div>
             </section>
+            <ToggleDisplay show={showDashboard}>
+                <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
+            </ToggleDisplay>
             </div>
         </main>
     </div>

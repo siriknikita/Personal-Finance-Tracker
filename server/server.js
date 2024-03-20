@@ -97,13 +97,13 @@ app.get("/api/get_user/email/:userEmail", (req, res) => {
     );
 });
 
-app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
+app.get("/api/get/transactions/categories/:userID", (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const userIDString = JSON.parse(parseObj)['userID'];
 	const userID = parseInt(userIDString, 10);
 
 	db.query(
-		"SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = (?)",
+		"SELECT CategoryID FROM Transactions WHERE UserID = (?)",
 		[userID],
 		(error, result) => {
 			if (error) {
@@ -112,11 +112,48 @@ app.get("/api/get_data/userID/:userID/transactions", (req, res) => {
 				return;
 			}
 			if (result) {
-				console.log("Transaction obtained successfully!");
-				res.send(result);
+				console.log("CategoriesID obtained successfully!");
+				const categoryObj = JSON.stringify(result);
+				const category = JSON.parse(categoryObj);
+				const categoryList = []
+				category.forEach(element => {
+					categoryList.push(element.CategoryID);
+				});
+				res.send(categoryList);
 			} else {
-				console.error("No transaction was fonud!");
-				res.status(404).json({ error: "No transaction was found!" });
+				console.error("No CategoriesID was fonud!");
+				res.status(404).json({ error: "No CategoriesID was found!" });
+			}
+		}
+	);
+});
+
+app.get("/api/get/transactions/categories/moneySpent/:userID", (req, res) => {
+	const parseObj = JSON.stringify(req.params);
+	const userIDString = JSON.parse(parseObj)['userID'];
+	const userID = parseInt(userIDString, 10);
+
+	db.query(
+		"SELECT Amount FROM Transactions WHERE UserID = (?)",
+		[userID],
+		(error, result) => {
+			if (error) {
+				console.error("Error getting a data about transaction:", error);
+				res.status(500).json({ error: "Internal server error" });
+				return;
+			}
+			if (result) {
+				console.log("Money obtained successfully!");
+				const moneySpent = JSON.stringify(result);
+				const money = JSON.parse(moneySpent);
+				const moneyList = []
+				money.forEach(element => {
+					moneyList.push(element.Amount);
+				});
+				res.send(moneyList);
+			} else {
+				console.error("No money was fonud!");
+				res.status(404).json({ error: "No money was found!" });
 			}
 		}
 	);
