@@ -18,16 +18,6 @@ async function getUser(email) {
     return rows[0];
 }
 
-async function getUserIDByEmail(email) {
-    const [rows] = await connection.promise().query(
-        `SELECT UserID
-        FROM Users
-        WHERE Email=(?)`,
-        [email]
-    );
-    return rows[0]['UserID'];
-}
-
 async function createUser(username, email, passwordHash) {
     const { insertID } = await connection.promise().query(
         `INSERT INTO Users (Username, Email, PasswordHash) 
@@ -37,40 +27,38 @@ async function createUser(username, email, passwordHash) {
     return insertID;
 }
 
-async function loginUser(email, password) {
-    const user = await getUser(email);
+async function loginUser(password) {
     return user.PasswordHash == password;
 }
 
-async function getTransactionCategoriesIDByEmail(email) {
-    const userID = await getUserIDByEmail(email);
-    const categoriesObj = await connection.promise().query(
+async function getTransactionCategoriesIDByUserID(userID) {
+    const categoriesRequest = await connection.promise().query(
         `SELECT CategoryID
         FROM Transactions
         WHERE UserID = (?)`,
         [userID]
     );
-    const categoriesJSON = categoriesObj[0];
+    const categoriesJSON = categoriesRequest[0];
     let categoriesID = [];
     for(let i = 0; i < categoriesJSON.length; i++) {
-        categoriesID.push(categoriesJSON[i]['CategoryID']);
+        categoriesID.push(categoriesJSON[i].CategoryID);
     }
     return categoriesID;
 }
 
 async function getCategoryNameByID(categoryID) {
-    const categoryNameObj = await connection.promise().query(
+    const categoryNameRequest = await connection.promise().query(
         `SELECT CategoryName
         FROM Categories
         WHERE CategoryID=(?)`,
         [categoryID]
     );
-    const categoryNameJSON = categoryNameObj[0][0];
-    return categoryNameJSON['CategoryName'];
+    const categoryNameJSON = categoryNameRequest[0][0];
+    return categoryNameJSON.CategoryName;
 }
 
-async function getTransactionCategoriesByEmail(email) {
-    const categoriesID = await getTransactionCategoriesIDByEmail(email);
+async function getTransactionCategoriesByUserID(userID) {
+    const categoriesID = await getTransactionCategoriesIDByUserID(userID);
     let categoriesList = [];
     for(let i = 0; i < categoriesID.length; i++) {
         const categoryName = await getCategoryNameByID(categoriesID[i]);
@@ -79,8 +67,7 @@ async function getTransactionCategoriesByEmail(email) {
     return categoriesList;
 }
 
-async function getTransactionMoneyByEmail(email) {
-    const userID = await getUserIDByEmail(email);
+async function getTransactionMoneyByUserID(userID) {
     const moneySpentObj = await connection.promise().query(
         `SELECT Amount
         FROM Transactions
@@ -90,13 +77,12 @@ async function getTransactionMoneyByEmail(email) {
     const moneySpentJSON = moneySpentObj[0];
     let moneySpent = [];
     for(let i = 0; i < moneySpentJSON.length; i++) {
-        moneySpent.push(moneySpentJSON[i]['Amount']);
+        moneySpent.push(moneySpentJSON[i].Amount);
     }
     return moneySpent;
 }
 
-async function addTransaction(email, amount, categoryID) {
-    const userID = await getUserIDByEmail(email);
+async function addTransaction(userID, amount, categoryID) {
     const [rows] = await connection.promise().query(
         `INSERT INTO 
         Transactions(UserID, Amount, CategoryID) 
@@ -106,12 +92,43 @@ async function addTransaction(email, amount, categoryID) {
     return true;
 }
 
+async function getTotalSpent(userID) {
+    const totalSpentRequest = await connection.promise().query(
+        `SELECT TotalSpent
+        FROM Users
+        WHERE UserID = (?)`,
+        [userID]
+    );
+    const totalSpentJSON = totalSpentRequest[0][0];
+    console.log('TotalSpentJSON:');
+    console.log(totalSpentJSON);
+    console.log(`Passed UserID: ${userID}`);
+    return totalSpentJSON.TotalSpent;
+}
+
+async function updateTotalMoneySpentByUserID(userID, amount) {
+    const totalSpentResponse = await getTotalSpent(userID);
+    const totalSpent = parseInt(totalSpentResponse, 10);
+    const toAdd = totalSpent + amount;
+    console.log(`Passed amount: ${amount}`);
+    console.log(`To add: ${toAdd}`);
+    console.log(`Passed UserID: ${userID}`);
+    const [rows] = await connection.promise().query(
+        `UPDATE Users
+        SET TotalSpent = (?)
+        WHERE UserID = (?)`,
+        [toAdd, userID]
+    );
+    return [true, toAdd];
+}
+
 module.exports = {
     getUser,
     createUser,
     loginUser,
     getCategoryNameByID,
-    getTransactionCategoriesByEmail,
-    getTransactionMoneyByEmail,
-    addTransaction
+    getTransactionCategoriesByUserID,
+    getTransactionMoneyByUserID,
+    addTransaction,
+    updateTotalMoneySpentByUserID
 };

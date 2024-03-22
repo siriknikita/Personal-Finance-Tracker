@@ -9,11 +9,13 @@ function Dashboard() {
     const location = useLocation();
     const email = location.state.userEmail;
     const [ user, setUser ] = useState({});
+    const [ userID, setUserID ] = useState(1);
     
     const [ currentAmount, setCurrentAmount ] = useState(0.0);
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
 
     const [ moneySpent, setMoneySpent ] = useState([]);
+    const [ totalSpent, setTotalSpent ] = useState(0.0);
     const [ transactionCategories, setTransactionCategories ] = useState({});
     const [ showDashboard, setShowDashboard ] = useState(true)
     const [ isOpen, setIsOpen ] = useState(false);
@@ -30,14 +32,15 @@ function Dashboard() {
     useEffect(() => {
         const fetchUser = async () => {
             const fetchedUser = await getUserByEmail(email);
-            setUser(fetchedUser['user']);
+            setUser(fetchedUser.user);
+            setUserID(fetchedUser.userID)
         };
         fetchUser();
     }, [email]);
 
-    const getTransactionCategoriesByEmail = async (givenEmail) => {
+    const getTransactionCategories = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${givenEmail}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${userID}`);
             if (response.ok) {
                 return await response.json();
             } else {
@@ -50,15 +53,15 @@ function Dashboard() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const fetchedCategories = await getTransactionCategoriesByEmail(email);
+            const fetchedCategories = await getTransactionCategories();
             setTransactionCategories(fetchedCategories)
         };
         fetchCategories();
-    }, [email]);
+    }, []);
 
-    const getMoneySpentByEmail = async (givenEmail) => {
+    const getMoneySpent = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/moneySpent/${givenEmail}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/moneySpent/${userID}`);
             return await response.json();
         } catch (error) {
             console.error("Error retrieving money:", error);
@@ -67,12 +70,39 @@ function Dashboard() {
     
     useEffect(() => {
         const fetchMoney = async () => {
-            const fetchedMoney = await getMoneySpentByEmail(email);
+            const fetchedMoney = await getMoneySpent();
             setMoneySpent(fetchedMoney);
         };
         fetchMoney();
-    }, [email]);
+    }, []);
+
+    const updateTotalMoneySpent = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/update/totalSpent/${userID}`, {
+                method: 'POST',
+                body: JSON.stringify({ amount: currentAmount }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log("Updated response:");
+            console.log(response);
+            if (response.ok) {
+                const updatedMoney = await response.json();
+                setTotalSpent(updatedMoney.toAddValue);
+            }
+        } catch (error) {
+            console.error('Error updating total money spent:', error);
+        }
+    };
     
+    useEffect(() => {
+        const fetchTotalSpent = async () => {
+            updateTotalMoneySpent()
+        };
+        fetchTotalSpent();
+    }, []);
+
     const handlePopupSubmit = () => {
         setShowDashboard(false);
         setIsOpen(true);
@@ -91,12 +121,12 @@ function Dashboard() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email, currentAmount, currentCategoryID }),
+                body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
             });
             if (response) {
                 const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);
                 const currentCategoryObj = await responseCategory.json();
-                const currentCategoryName = currentCategoryObj['categoryName']
+                const currentCategoryName = currentCategoryObj.categoryName;
                 setMoneySpent([...moneySpent, currentAmount]);
                 setTransactionCategories([...transactionCategories, currentCategoryName]);
                 handleClose();
@@ -218,7 +248,7 @@ function Dashboard() {
                     </div>
                     <div className={styles.box_content}>
                         <span className={styles.big}>
-                            {user["TotalSpent"]}
+                            {totalSpent}
                         </span>
                         Money spent total ($)
                     </div>

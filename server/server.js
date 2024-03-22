@@ -72,7 +72,7 @@ app.post("/api/login", async (req, res) => {
 // Get user by email
 app.get("/api/get/user/email/:email", async (req, res) => {
     const parseObj = JSON.stringify(req.params);
-	const email = JSON.parse(parseObj)['email'];
+	const email = JSON.parse(parseObj).email;
 	
 	try {
 		const user = await database.getUser(email);
@@ -89,13 +89,13 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 	}
 });
 
-// Get user's transaction categories by email
-app.get("/api/get/transactions/categories/:email", async (req, res) => {
+// Get user's transaction categories by userID
+app.get("/api/get/transactions/categories/:userID", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
-	const email = JSON.parse(parseObj)['email'];
+	const userID = JSON.parse(parseObj).userID;
 
 	try {
-		const categories = await database.getTransactionCategoriesByEmail(email);
+		const categories = await database.getTransactionCategoriesByUserID(userID);
 		res.send(categories);
 		return categories;
 	} catch (error) {
@@ -105,13 +105,13 @@ app.get("/api/get/transactions/categories/:email", async (req, res) => {
 	}
 });
 
-// Get user's transaction money spent by email
-app.get("/api/get/transactions/moneySpent/:email", async (req, res) => {
+// Get user's transaction money spent by userID
+app.get("/api/get/transactions/moneySpent/:userID", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
-	const email = JSON.parse(parseObj)['email'];
+	const userID = JSON.parse(parseObj).userID;
 
 	try {
-		const moneySpent = await database.getTransactionMoneyByEmail(email);
+		const moneySpent = await database.getTransactionMoneyByUserID(userID);
 		res.send(moneySpent);
 		return moneySpent;
 	} catch (error) {
@@ -123,15 +123,15 @@ app.get("/api/get/transactions/moneySpent/:email", async (req, res) => {
 
 // Add a transaction to the database
 app.post("/api/add/transaction", async (req, res) => {
-	const { email, currentAmount, currentCategoryID } = req.body;
-	const response = await database.addTransaction(email, currentAmount, currentCategoryID);
+	const { userID, currentAmount, currentCategoryID } = req.body;
+	const response = await database.addTransaction(userID, currentAmount, currentCategoryID);
 	res.send(response);
 });
 
 // Get category name by ID
 app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
-	const categoryID = JSON.parse(parseObj)['categoryID'];
+	const categoryID = JSON.parse(parseObj).categoryID;
 
 	try {
 		const categoryName = await database.getCategoryNameByID(categoryID);
@@ -141,6 +141,17 @@ app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 		res.status(500);
 		return;
 	}
+});
+
+app.post("/api/update/totalSpent/:userID", async (req, res) => {
+    const { userID } = req.params;
+    const { amount } = req.body; // Get amount from the request body
+
+    console.log(`Amount: ${amount}`);
+    const values = await database.updateTotalMoneySpentByUserID(userID, amount);
+    const response = values[0];
+    const toAddValue = values[1];
+    res.status(200).send({ response, toAddValue });
 });
 
 // A request for testing
