@@ -6,9 +6,9 @@ const bodyParser = require("body-parser")
 const passport = require("passport");
 const authRoute = require("./routes/auth");
 const cookieSession = require("cookie-session");
-// const passportStrategy = require("./passport");
 const app = express();
 
+// Initialize new cookie session
 app.use(
 	cookieSession({
 		name: "session",
@@ -17,10 +17,12 @@ app.use(
 	})
 );
 
+// Initialize instruments for parsing and correct server's work
 app.use(bodyParser.json())
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Define default values of usage
 app.use(
 	cors({
 		origin: "http://localhost:3000",
@@ -29,6 +31,7 @@ app.use(
 	})
 );
 
+// Handle user's signing up
 app.post("/api/signup", async (req, res) => {
 	const { username, email, passwordHash } = req.body;
 
@@ -47,6 +50,7 @@ app.post("/api/signup", async (req, res) => {
 	}
 });
 
+// Handle user's loggin in
 app.post("/api/login", async (req, res) => {
 	const { email, passwordHash } = req.body;
 
@@ -65,6 +69,7 @@ app.post("/api/login", async (req, res) => {
 	}
 });
 
+// Get user by email
 app.get("/api/get/user/email/:email", async (req, res) => {
     const parseObj = JSON.stringify(req.params);
 	const email = JSON.parse(parseObj)['email'];
@@ -84,6 +89,7 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 	}
 });
 
+// Get user's transaction categories by email
 app.get("/api/get/transactions/categories/:email", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const email = JSON.parse(parseObj)['email'];
@@ -99,6 +105,7 @@ app.get("/api/get/transactions/categories/:email", async (req, res) => {
 	}
 });
 
+// Get user's transaction money spent by email
 app.get("/api/get/transactions/moneySpent/:email", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const email = JSON.parse(parseObj)['email'];
@@ -114,13 +121,14 @@ app.get("/api/get/transactions/moneySpent/:email", async (req, res) => {
 	}
 });
 
+// Add a transaction to the database
 app.post("/api/add/transaction", async (req, res) => {
 	const { email, currentAmount, currentCategoryID } = req.body;
 	const response = await database.addTransaction(email, currentAmount, currentCategoryID);
-	console.log(response);
 	res.send(response);
 });
 
+// Get category name by ID
 app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const categoryID = JSON.parse(parseObj)['categoryID'];
@@ -135,7 +143,8 @@ app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 	}
 });
 
-app.get("/api/test/userAuth/email/:Email/password/:Password", (req, res) => {
+// A request for testing
+app.get("/api/test/userAuth/email/:Email/password/:Password", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const emailString = JSON.parse(parseObj)['Email'];
 	const passwordString = JSON.parse(parseObj)['Password'];

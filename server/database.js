@@ -97,8 +97,6 @@ async function getTransactionMoneyByEmail(email) {
 
 async function addTransaction(email, amount, categoryID) {
     const userID = await getUserIDByEmail(email);
-    const query = `INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (${userID}, ${amount}, ${categoryID})`;
-    console.log(query);
     const [rows] = await connection.promise().query(
         `INSERT INTO 
         Transactions(UserID, Amount, CategoryID) 
