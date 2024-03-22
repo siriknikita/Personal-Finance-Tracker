@@ -40,13 +40,24 @@ CREATE TABLE IF NOT EXISTS Transactions (
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
+-- Create a Table to manage current user budget
+-- User selects a category and for each category we define an amount of money he want to spread on.
+CREATE TABLE IF NOT EXISTS Budget (
+	UserID INT,
+    CategoryID INT DEFAULT 1,
+    Amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+);
+
+-- Create a Table to manage user's goals
+CREATE TABLE IF NOT EXISTS Goals (
+	UserID INT,
+    GoalDescription TEXT,
+    Deadline DATETIME,
+	FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
 SELECT * FROM Users;
 SELECT * FROM Transactions;
-SELECT Amount FROM Transactions WHERE UserID = 1;
 SELECT * FROM Categories;
-UPDATE Transactions
-SET UserID = 1
-WHERE TransactionID = 12;
-
-INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (1, 12.39, 1);
-SELECT TransactionID, Amount, CategoryID FROM Transactions WHERE UserID = 1;

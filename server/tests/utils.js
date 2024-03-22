@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const fetchAuthData = (email, password) => {
+function fetchAuthData (email, password) {
     return new Promise((resolve, reject) => {
         fetch(`${process.env.REACT_APP_API_URL}/api/test/userAuth/email/${email}/password/${password}`)
             .then(response => {
@@ -13,4 +13,4 @@ const fetchAuthData = (email, password) => {
     });
 };
 
-module.exports = fetchAuthData; // Exporting for testing purposes
+module.exports = fetchAuthData

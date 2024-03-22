@@ -1,12 +1,12 @@
 require("dotenv").config();
+const database = require('./database.js')
 const express = require("express");
 const cors = require("cors");
-const db = require('./db')
 const bodyParser = require("body-parser")
 const passport = require("passport");
 const authRoute = require("./routes/auth");
 const cookieSession = require("cookie-session");
-const passportStrategy = require("./passport");
+// const passportStrategy = require("./passport");
 const app = express();
 
 app.use(
@@ -29,170 +29,116 @@ app.use(
 	})
 );
 
-app.post("/api/signup", (req, res) => {
+app.post("/api/signup", async (req, res) => {
 	const { username, email, passwordHash } = req.body;
 
-	db.query(
-		"INSERT INTO Users (Username, Email, PasswordHash) VALUES (?, ?, ?)",
-		[username, email, passwordHash],
-		(error, result) => {
-			if (error) {
-				console.error("Error signing up user:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
-			console.log("User signed up successfully!");
-			res.status(200).json({ message: "User signed up successfully!" });
+	try {
+		const user = await database.getUser(email);
+		if (user) {
+			res.status(400).send({ error: "email already taken" });
+			return;
 		}
-	);
+		const userID = await database.createUser(username, email, passwordHash);
+		res.send({ userID });
+	} catch (error) {
+		console.error(`Error signing up: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
 	const { email, passwordHash } = req.body;
 
-	db.query(
-		"SELECT count(?) AS count FROM Users WHERE Email=(?) AND PasswordHash=(?)",
-		[email, email, passwordHash],
-		(error, result) => {
-			if (error) {
-				console.error("Error signing up user:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
-			if (result[0]["count"] == 1) {
-				console.log("User logged in successfully!");
-				res.status(200).json({ message: "User logged in successfully!" });
-			} else {
-				console.error("No user was found!");
-				res.status(500).json({ error: "User not found error!" });
-				return;
-			}
+	try {
+		const canLogin = await database.loginUser(email, passwordHash);
+		if (canLogin) {
+			res.status(200).send(true);
+		} else {
+			console.log('Cannot login a user');
+			res.status(400).send(false);
 		}
-	);
+	} catch (error) {
+		console.error(`Error logging in user: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
-app.get("/api/get_user/email/:userEmail", (req, res) => {
+app.get("/api/get/user/email/:email", async (req, res) => {
     const parseObj = JSON.stringify(req.params);
-	const email = JSON.parse(parseObj)['userEmail'];
+	const email = JSON.parse(parseObj)['email'];
 	
-	db.query(
-        "SELECT * FROM Users WHERE Email = (?)",
-        [email],
-        (error, result) => {
-            if (error) {
-                console.error("Error getting a user:", error);
-                res.status(500).json({ error: "Internal server error" });
-                return;
-            }
-			if (result) {
-                console.log("User found successfully!");
-				const userObj = JSON.stringify(result[0]);
-				const user = JSON.parse(userObj);
-				res.send(user);
-            } else {
-                console.error("No user was found!");
-                res.status(404).json({ error: "User not found error!" });
-            }
-        }
-    );
+	try {
+		const user = await database.getUser(email);
+		if (!user) {
+			res.status(400).send({ error: "No user was found with given email" })
+			return;
+		} else {
+			res.status(200).send({ user: user });
+		}
+	} catch (error) {
+		console.error(`Error getting a user: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
-app.get("/api/get/transactions/categories/:userID", (req, res) => {
+app.get("/api/get/transactions/categories/:email", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
-	const userIDString = JSON.parse(parseObj)['userID'];
-	const userID = parseInt(userIDString, 10);
+	const email = JSON.parse(parseObj)['email'];
 
-	db.query(
-		"SELECT CategoryID FROM Transactions WHERE UserID = (?)",
-		[userID],
-		(error, result) => {
-			if (error) {
-				console.error("Error getting a data about transaction:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
-			if (result) {
-				console.log("CategoriesID obtained successfully!");
-				const categoryObj = JSON.stringify(result);
-				const category = JSON.parse(categoryObj);
-				const categoryList = []
-				category.forEach(element => {
-					categoryList.push(element.CategoryID);
-				});
-				res.send(categoryList);
-			} else {
-				console.error("No CategoriesID was fonud!");
-				res.status(404).json({ error: "No CategoriesID was found!" });
-			}
-		}
-	);
+	try {
+		const categories = await database.getTransactionCategoriesByEmail(email);
+		res.send(categories);
+		return categories;
+	} catch (error) {
+		console.error(`Error getting a categories: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
-app.get("/api/get/transactions/categories/moneySpent/:userID", (req, res) => {
+app.get("/api/get/transactions/moneySpent/:email", async (req, res) => {
 	const parseObj = JSON.stringify(req.params);
-	const userIDString = JSON.parse(parseObj)['userID'];
-	const userID = parseInt(userIDString, 10);
+	const email = JSON.parse(parseObj)['email'];
 
-	db.query(
-		"SELECT Amount FROM Transactions WHERE UserID = (?)",
-		[userID],
-		(error, result) => {
-			if (error) {
-				console.error("Error getting a data about transaction:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
-			if (result) {
-				console.log("Money obtained successfully!");
-				const moneySpent = JSON.stringify(result);
-				const money = JSON.parse(moneySpent);
-				const moneyList = []
-				money.forEach(element => {
-					moneyList.push(element.Amount);
-				});
-				res.send(moneyList);
-			} else {
-				console.error("No money was fonud!");
-				res.status(404).json({ error: "No money was found!" });
-			}
-		}
-	);
+	try {
+		const moneySpent = await database.getTransactionMoneyByEmail(email);
+		res.send(moneySpent);
+		return moneySpent;
+	} catch (error) {
+		console.error(`Error getting a money spent: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
-app.post("/api/add/transaction", (req, res) => {
-	const { userID, currentAmount, currentCategoryID } = req.body;
-	
-	db.query(
-		"INSERT INTO Transactions(UserID, Amount, CategoryID) VALUES (?, ?, ?)",
-		[userID, currentAmount, currentCategoryID],
-		(error, result) => {
-			if (error) {
-				console.error("Error adding a new transaction:", error);
-				res.status(500).json({ error: "Internal server error" });
-				return;
-			}
-			if (result) {
-				console.log("Transaction added successfully!");
-				res.status(200).json({ message: "Transaction added successfully!" });
-			} else {
-				console.error("No transaction was fonud!");
-				res.status(500).json({ error: "No transaction was found!" });
-				return;
-			}
-		}
-	);
+app.post("/api/add/transaction", async (req, res) => {
+	const { email, currentAmount, currentCategoryID } = req.body;
+	const response = await database.addTransaction(email, currentAmount, currentCategoryID);
+	console.log(response);
+	res.send(response);
+});
+
+app.get("/api/get/categoryName/:categoryID", async (req, res) => {
+	const parseObj = JSON.stringify(req.params);
+	const categoryID = JSON.parse(parseObj)['categoryID'];
+
+	try {
+		const categoryName = await database.getCategoryNameByID(categoryID);
+		res.status(200).send({ categoryName });
+	} catch (error) {
+		console.error(`Error getting a category name: ${error}`);
+		res.status(500);
+		return;
+	}
 });
 
 app.get("/api/test/userAuth/email/:Email/password/:Password", (req, res) => {
 	const parseObj = JSON.stringify(req.params);
 	const emailString = JSON.parse(parseObj)['Email'];
 	const passwordString = JSON.parse(parseObj)['Password'];
-
-
-	console.log('Email:');
-	console.log(emailString);
-	console.log('Password:');
-	console.log(passwordString);
 
 	const specialSymbols = "-";
 	

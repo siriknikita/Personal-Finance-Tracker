@@ -9,7 +9,6 @@ function Dashboard() {
     const location = useLocation();
     const email = location.state.userEmail;
     const [ user, setUser ] = useState({});
-    const [ userID, setUserID ] = useState(1);
     
     const [ currentAmount, setCurrentAmount ] = useState(0.0);
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
@@ -21,7 +20,7 @@ function Dashboard() {
 
     const getUserByEmail = async (givenEmail) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get_user/email/${givenEmail}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/user/email/${givenEmail}`);
             const user = await response.json();
             console.log("User retrieved successfully:", user);
             return user;
@@ -34,34 +33,37 @@ function Dashboard() {
         const fetchUser = async () => {
             const fetchedUser = await getUserByEmail(email);
             setUser(fetchedUser);
-            setUserID(fetchedUser['userID']);
         };
         fetchUser();
     }, [email]);
 
-    const getUserTransactionCategoriesByID = async (givenUserID) => {
+    const getTransactionCategoriesByEmail = async (givenEmail) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${givenUserID}`);
-            const transaction = await response.json();
-            console.log("Transaction retrieved successfully:", transaction);
-            return transaction;
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${givenEmail}`);
+            if (response.ok) {
+                const categories = await response.json();
+                console.log("Categories retrieved successfully:");
+                console.log(categories);
+                return categories;
+            } else {
+                console.log("Error retrieving transactions");
+            }
         } catch (error) {
-            console.error("Error retrieving transaction:", error);
+            console.error("Error retrieving transactions:", error);
         }
     };
 
     useEffect(() => {
-        const fetchTransactionCategory = async () => {
-            const fetchedTransactionCategories = await getUserTransactionCategoriesByID(userID);
-            console.log(fetchedTransactionCategories);
-            setTransactionCategories(fetchedTransactionCategories);
+        const fetchCategories = async () => {
+            const fetchedCategories = await getTransactionCategoriesByEmail(email);
+            setTransactionCategories(fetchedCategories)
         };
-        fetchTransactionCategory();
-    }, []);
+        fetchCategories();
+    }, [email]);
 
-    const getMoneySpentByID = async (givenUserID) => {
+    const getMoneySpentByEmail = async (givenEmail) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/moneySpent/${givenUserID}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/moneySpent/${givenEmail}`);
             const moneyRetrieved = await response.json();
             console.log("Money retrieved successfully:", moneyRetrieved);
             return moneyRetrieved;
@@ -72,27 +74,29 @@ function Dashboard() {
     
     useEffect(() => {
         const fetchMoney = async () => {
-            const fetchedMoney = await getMoneySpentByID(userID);
+            const fetchedMoney = await getMoneySpentByEmail(email);
             setMoneySpent(fetchedMoney);
         };
         fetchMoney();
-    }, []);
+    }, [email]);
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const userID = user.UserID;
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add/transaction`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
+                body: JSON.stringify({ email, currentAmount, currentCategoryID }),
             });
-            if (response.ok) {
+            if (response) {
                 console.log("Transaction added successfully!");
+                const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);
+                const currentCategoryObj = await responseCategory.json();
+                const currentCategoryName = currentCategoryObj['categoryName']
                 setMoneySpent([...moneySpent, currentAmount]);
-                setTransactionCategories([...transactionCategories, currentCategoryID]);
+                setTransactionCategories([...transactionCategories, currentCategoryName]);
                 setIsOpen(false);
                 setShowDashboard(true);
             } else {
@@ -120,10 +124,10 @@ function Dashboard() {
             <figure className={styles.user}>
                 <div className={styles.user_avatar}>
                 </div>
-                <figcaption>{user['Username']}</figcaption>
+                <figcaption>{user.Username}</figcaption>
             </figure>
             <nav>
-            {/* Sections */}
+            {/* Discover categoryd */}
             <section className={styles.discover}>
                 <h3>Discover</h3>
                 <ul>
@@ -155,77 +159,82 @@ function Dashboard() {
             {/* Tools */}
             <section className={styles.tools}>
                 <h3>Tools</h3>
+                {/* List of tools */}
                 <ul>
-                <li>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z" />
-                    </svg>
-                    Search
-                </li>
-                <li>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M21 4H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 14H4V9.227l7.335 6.521a1.003 1.003 0 0 0 1.33-.001L20 9.227V18zm0-11.448l-8 7.11-8-7.111V6h16v.552z" />
-                    </svg>
-                    Messages
-                </li>
-                <li>
-                    <svg 
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-plus-circle"
-                        viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                    </svg>
-                    <button onClick={handlePopupSubmit}>Add transaction</button>
-                    <Popup trigger={isOpen} setTrigger={setIsOpen} onClose={handleClose}>
-                        <h3>Add a new transaction!</h3>
-                        <form onSubmit={handleSubmit}>
-                            <label>
-                                Enter amount of money ($):
-                                <input 
-                                type="number"
-                                className={styles.input}
-                                placeholder="Amount"
-                                value={currentAmount}
-                                onChange={(e) => setCurrentAmount(e.target.value)}
-                                required
-                                />
-                            </label>
-                            <br />
-                            <label>
-                                Choose a category:
-                                <select 
-                                    value={currentCategoryID}
-                                    onChange={(e) => setCurrentCategoryID(e.target.value)}
-                                >
-                                    <option value="1">Groceries</option>
-                                    <option value="2">Utilities</option>
-                                    <option value="3">Rent</option>
-                                    <option value="4">Entertainment</option>
-                                    <option value="5">Healthcare</option>
-                                    <option value="6">Transportation</option>
-                                    <option value="7">Other</option>
-                                </select>
-                            </label>
-                            <br />
-                            <br />
-                            <button className={styles.btn}>Submit</button>
-                        </form>
-                    </Popup>
-                </li>
+                    {/* Search option */}
+                    <li>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z" />
+                        </svg>
+                        Search
+                    </li>
+                    {/* Messaging option */}
+                    <li>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M21 4H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 14H4V9.227l7.335 6.521a1.003 1.003 0 0 0 1.33-.001L20 9.227V18zm0-11.448l-8 7.11-8-7.111V6h16v.552z" />
+                        </svg>
+                        Messages
+                    </li>
+                    {/* Adding transaction option */}
+                    <li>
+                        <svg 
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-plus-circle"
+                            viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                        <button onClick={handlePopupSubmit}>Add transaction</button>
+                        {/* Define a popup menu to prompt user to enter an amount of money he spent on a category */}
+                        <Popup trigger={isOpen} setTrigger={setIsOpen} onClose={handleClose}>
+                            <h3>Add a new transaction!</h3>
+                            <form onSubmit={handleSubmit}>
+                                <label>
+                                    Enter amount of money ($):
+                                    <input 
+                                    type="number"
+                                    className={styles.input}
+                                    placeholder="Amount"
+                                    value={currentAmount}
+                                    onChange={(e) => setCurrentAmount(e.target.value)}
+                                    required
+                                    />
+                                </label>
+                                <br />
+                                <label>
+                                    Choose a category:
+                                    <select 
+                                        value={currentCategoryID}
+                                        onChange={(e) => setCurrentCategoryID(e.target.value)}
+                                    >
+                                        <option value="1">Groceries</option>
+                                        <option value="2">Utilities</option>
+                                        <option value="3">Rent</option>
+                                        <option value="4">Entertainment</option>
+                                        <option value="5">Healthcare</option>
+                                        <option value="6">Transportation</option>
+                                        <option value="7">Other</option>
+                                    </select>
+                                </label>
+                                <br />
+                                <br />
+                                <button className={styles.btn}>Submit</button>
+                            </form>
+                        </Popup>
+                    </li>
                 </ul>
             </section>
             </nav>
