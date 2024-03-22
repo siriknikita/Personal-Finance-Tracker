@@ -27,7 +27,8 @@ async function createUser(username, email, passwordHash) {
     return insertID;
 }
 
-async function loginUser(password) {
+async function loginUser(email, password) {
+    const user = await getUser(email);
     return user.PasswordHash == password;
 }
 
@@ -102,7 +103,6 @@ async function getTotalSpent(userID) {
     const totalSpentJSON = totalSpentRequest[0][0];
     console.log('TotalSpentJSON:');
     console.log(totalSpentJSON);
-    console.log(`Passed UserID: ${userID}`);
     return totalSpentJSON.TotalSpent;
 }
 
@@ -110,9 +110,9 @@ async function updateTotalMoneySpentByUserID(userID, amount) {
     const totalSpentResponse = await getTotalSpent(userID);
     const totalSpent = parseInt(totalSpentResponse, 10);
     const toAdd = totalSpent + amount;
-    console.log(`Passed amount: ${amount}`);
-    console.log(`To add: ${toAdd}`);
-    console.log(`Passed UserID: ${userID}`);
+    // console.log(`Passed amount: ${amount}`);
+    // console.log(`To add: ${toAdd}`);
+    // console.log(`Passed UserID: ${userID}`);
     const [rows] = await connection.promise().query(
         `UPDATE Users
         SET TotalSpent = (?)
