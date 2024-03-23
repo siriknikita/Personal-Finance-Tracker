@@ -107,19 +107,28 @@ async function getTotalSpent(userID) {
 }
 
 async function updateTotalMoneySpentByUserID(userID, amount) {
-    const totalSpentResponse = await getTotalSpent(userID);
-    const totalSpent = parseInt(totalSpentResponse, 10);
-    const toAdd = totalSpent + amount;
-    // console.log(`Passed amount: ${amount}`);
-    // console.log(`To add: ${toAdd}`);
-    // console.log(`Passed UserID: ${userID}`);
-    const [rows] = await connection.promise().query(
-        `UPDATE Users
-        SET TotalSpent = (?)
-        WHERE UserID = (?)`,
-        [toAdd, userID]
-    );
-    return [true, toAdd];
+    console.log(`UserID: ${userID}`);
+    console.log(`Amount: ${amount}`);
+
+    try {
+        const totalSpentResponse = await getTotalSpent(userID);
+        const totalSpent = parseFloat(totalSpentResponse);
+        const toAdd = totalSpent + amount;
+
+        const [rows] = await connection.promise().query(
+            `UPDATE Users
+            SET TotalSpent = ?
+            WHERE UserID = ?`,
+            [toAdd, userID]
+        );
+
+        console.log(`Number of updated rows: ${rows.affectedRows}`);
+
+        return [true, toAdd];
+    } catch (error) {
+        console.error('Error occurred during the update operation: ', error);
+        return [false, error];
+    }
 }
 
 module.exports = {

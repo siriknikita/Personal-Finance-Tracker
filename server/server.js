@@ -147,11 +147,12 @@ app.post("/api/update/totalSpent/:userID", async (req, res) => {
     const { userID } = req.params;
     const { amount } = req.body; // Get amount from the request body
 
-    console.log(`Amount: ${amount}`);
+	console.log(`Amount passed to totalSpent function:`);
+	console.log(amount);
     const values = await database.updateTotalMoneySpentByUserID(userID, amount);
     const response = values[0];
     const toAddValue = values[1];
-    res.status(200).send({ response, toAddValue });
+	res.status(200).send({ response: response, toAddValue: toAddValue });
 });
 
 // A request for testing

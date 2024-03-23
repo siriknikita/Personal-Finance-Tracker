@@ -78,7 +78,7 @@ function Dashboard() {
 
     const updateTotalMoneySpent = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/update/totalSpent/${userID}`, {
+            const values = await fetch(`${process.env.REACT_APP_API_URL}/api/update/totalSpent/${userID}`, {
                 method: 'POST',
                 body: JSON.stringify({ amount: currentAmount }),
                 headers: {
@@ -86,10 +86,10 @@ function Dashboard() {
                 },
             });
             console.log("Updated response:");
-            console.log(response);
-            if (response.ok) {
-                const updatedMoney = await response.json();
-                setTotalSpent(updatedMoney.toAddValue);
+            console.log(values);
+            if (values[0].ok) {
+                const updatedMoney = values[1];
+                setTotalSpent(updatedMoney);
             }
         } catch (error) {
             console.error('Error updating total money spent:', error);

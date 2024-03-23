@@ -47,28 +47,28 @@ function Signup() {
 					<h2 className={styles.from_heading}>Create Account</h2>
 					<form onSubmit={handleSubmit}>
 						<input
-						type="text"
-						className={styles.input}
-						placeholder="Username"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-						required
+							type="text"
+							className={styles.input}
+							placeholder="Username"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							required
 						/>
 						<input
-						type="email"
-						className={styles.input}
-						placeholder="Email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						required
+							type="email"
+							className={styles.input}
+							placeholder="Email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							required
 						/>
 						<input
-						type="password"
-						className={styles.input}
-						placeholder="Password"
-						value={passwordHash}
-						onChange={(e) => setPasswordHash(e.target.value)}
-						required
+							type="password"
+							className={styles.input}
+							placeholder="Password"
+							value={passwordHash}
+							onChange={(e) => setPasswordHash(e.target.value)}
+							required
 						/>
 						<br />
 						<button type="submit" className={styles.btn}>Sign Up</button>

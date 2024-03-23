@@ -60,8 +60,4 @@ CREATE TABLE IF NOT EXISTS Goals (
 
 SELECT * FROM Users;
 SELECT * FROM Transactions;
-
-UPDATE Users
-SET TotalSpent = (?)
-WHERE UserID = (?);
 SELECT * FROM Categories;
