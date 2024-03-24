@@ -23,8 +23,9 @@ yarn-error.log*
 
 .env
 
-/server/node_modules
-/server/.env
+/src/server/node_modules
+/src/server/.env
+/src/server/coverage
 
 .vscode
 .eslintrc.json
