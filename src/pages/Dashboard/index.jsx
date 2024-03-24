@@ -80,10 +80,12 @@ function Dashboard() {
         try {
             const values = await fetch(`${process.env.REACT_APP_API_URL}/api/update/totalSpent/${userID}`, {
                 method: 'POST',
-                body: JSON.stringify({ amount: currentAmount }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    amount: currentAmount
+                })
             });
             console.log("Updated response:");
             console.log(values);
@@ -121,7 +123,11 @@ function Dashboard() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ userID, currentAmount, currentCategoryID }),
+                body: JSON.stringify({
+                    userID: userID,
+                    currentAmount: currentAmount,
+                    currentCategoryID: currentCategoryID
+                }),
             });
             if (response) {
                 const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);

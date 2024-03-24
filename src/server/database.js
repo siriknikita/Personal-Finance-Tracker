@@ -12,7 +12,7 @@ async function getUser(email) {
     const [rows] = await connection.query(
         `SELECT *
         FROM Users
-        WHERE Email=(?)`,
+        WHERE Email = ?`,
         [email]
     );
     return rows[0];
@@ -36,7 +36,7 @@ async function getTransactionCategoriesIDByUserID(userID) {
     const [categoriesRequest] = await connection.query(
         `SELECT CategoryID
         FROM Transactions
-        WHERE UserID = (?)`,
+        WHERE UserID = ?`,
         [userID]
     );
     let categoriesID = [];
@@ -50,7 +50,7 @@ async function getCategoryNameByID(categoryID) {
     const [categoryNameRequest] = await connection.query(
         `SELECT CategoryName
         FROM Categories
-        WHERE CategoryID=(?)`,
+        WHERE CategoryID = ?`,
         [categoryID]
     );
     const categoryNameJSON = categoryNameRequest[0];

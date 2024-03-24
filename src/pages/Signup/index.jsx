@@ -23,7 +23,11 @@ function Signup() {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ username, email, passwordHash }),
+				body: JSON.stringify({
+					username: username,
+					email: email,
+					passwordHash: passwordHash
+				}),
 			});
 			if (responce.ok) {
 				console.log("User signed up successfully!");

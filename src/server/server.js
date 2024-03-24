@@ -71,8 +71,7 @@ app.post("/api/login", async (req, res) => {
 
 // Get user by email
 app.get("/api/get/user/email/:email", async (req, res) => {
-    const parseObj = JSON.stringify(req.params);
-	const email = JSON.parse(parseObj).email;
+	const email = req.params.email;
 	
 	try {
 		const user = await database.getUser(email);
@@ -91,13 +90,11 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 
 // Get user's transaction categories by userID
 app.get("/api/get/transactions/categories/:userID", async (req, res) => {
-	const parseObj = JSON.stringify(req.params);
-	const userID = JSON.parse(parseObj).userID;
+	const userID = req.params.userID;
 
 	try {
 		const categories = await database.getTransactionCategoriesByUserID(userID);
 		res.send(categories);
-		return categories;
 	} catch (error) {
 		console.error(`Error getting a categories: ${error}`);
 		res.status(500);
@@ -107,17 +104,14 @@ app.get("/api/get/transactions/categories/:userID", async (req, res) => {
 
 // Get user's transaction money spent by userID
 app.get("/api/get/transactions/moneySpent/:userID", async (req, res) => {
-	const parseObj = JSON.stringify(req.params);
-	const userID = JSON.parse(parseObj).userID;
+	const userID = req.params.userID;
 
 	try {
 		const moneySpent = await database.getTransactionMoneyByUserID(userID);
 		res.send(moneySpent);
-		return moneySpent;
 	} catch (error) {
 		console.error(`Error getting a money spent: ${error}`);
 		res.status(500);
-		return;
 	}
 });
 
@@ -125,7 +119,7 @@ app.get("/api/get/transactions/moneySpent/:userID", async (req, res) => {
 app.post("/api/add/transaction", async (req, res) => {
 	const { userID, currentAmount, currentCategoryID } = req.body;
 	const response = await database.addTransaction(userID, currentAmount, currentCategoryID);
-	res.send(response);
+	res.status(201).send(response);
 });
 
 // Get category name by ID
@@ -143,23 +137,21 @@ app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 	}
 });
 
-app.post("/api/update/totalSpent/:userID", async (req, res) => {
-    const { userID } = req.params;
-    const { amount } = req.body; // Get amount from the request body
+app.post("/api/update/totalSpent/", async (req, res) => {
+	const { userID, amount } = req.body;
 
 	console.log(`Amount passed to totalSpent function:`);
 	console.log(amount);
     const values = await database.updateTotalMoneySpentByUserID(userID, amount);
     const response = values[0];
     const toAddValue = values[1];
-	res.status(200).send({ response: response, toAddValue: toAddValue });
+	res.send({ response: response, toAddValue: toAddValue });
 });
 
 // A request for testing
 app.get("/api/test/userAuth/email/:Email/password/:Password", async (req, res) => {
-	const parseObj = JSON.stringify(req.params);
-	const emailString = JSON.parse(parseObj)['Email'];
-	const passwordString = JSON.parse(parseObj)['Password'];
+	const email = req.params.Email;
+	const password = req.params.Password;
 
 	const specialSymbols = "-";
 	
