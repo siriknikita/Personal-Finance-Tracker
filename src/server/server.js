@@ -118,14 +118,16 @@ app.get("/api/get/transactions/moneySpent/:userID", async (req, res) => {
 // Add a transaction to the database
 app.post("/api/add/transaction", async (req, res) => {
 	const { userID, currentAmount, currentCategoryID } = req.body;
+	console.log(`UserID passed: ${userID}`);
+	console.log(`Current categoryID passed: ${currentCategoryID}`);
+	console.log(`Current amount passed: ${currentAmount}`);
 	const response = await database.addTransaction(userID, currentAmount, currentCategoryID);
 	res.status(201).send(response);
 });
 
 // Get category name by ID
 app.get("/api/get/categoryName/:categoryID", async (req, res) => {
-	const parseObj = JSON.stringify(req.params);
-	const categoryID = JSON.parse(parseObj).categoryID;
+	const categoryID = req.params.categoryID;
 
 	try {
 		const categoryName = await database.getCategoryNameByID(categoryID);
