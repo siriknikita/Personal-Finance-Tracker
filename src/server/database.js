@@ -83,50 +83,35 @@ async function getTransactionMoneyByUserID(userID) {
 
 async function addTransaction(userID, amount, categoryID) {
     const [rows] = await connection.query(
-        `INSERT INTO 
-        Transactions(UserID, Amount, CategoryID) 
-        VALUES (?, ?, ?)`,
+        `INSERT INTO Transactions (UserID, Amount, CategoryID)
+        VALUES (?, ?, ?);`,
         [userID, amount, categoryID]
     );
     return true;
 }
 
 async function getTotalSpent(userID) {
-    const totalSpentRequest = await connection.query(
+    const [totalSpentRequest] = await connection.query(
         `SELECT TotalSpent
         FROM Users
         WHERE UserID = (?)`,
         [userID]
     );
-    const totalSpentJSON = totalSpentRequest[0][0];
-    console.log('TotalSpentJSON:');
-    console.log(totalSpentJSON);
-    return totalSpentJSON.TotalSpent;
+    return totalSpentRequest[0].TotalSpent;
 }
 
 async function updateTotalMoneySpentByUserID(userID, amount) {
-    console.log(`UserID: ${userID}`);
-    console.log(`Amount: ${amount}`);
-
-    try {
-        const totalSpentResponse = await getTotalSpent(userID);
-        const totalSpent = parseFloat(totalSpentResponse);
-        const toAdd = totalSpent + amount;
-
-        const [rows] = await connection.query(
-            `UPDATE Users
-            SET TotalSpent = ?
-            WHERE UserID = ?`,
-            [toAdd, userID]
-        );
-
-        console.log(`Number of updated rows: ${rows.affectedRows}`);
-
-        return [true, toAdd];
-    } catch (error) {
-        console.error('Error occurred during the update operation: ', error);
-        return [false, error];
-    }
+    const totalSpentString = await getTotalSpent(userID);
+    const totalSpent = parseFloat(totalSpentString);
+    const updateAmount = parseFloat(amount);
+    const updatedTotalSpent = totalSpent + updateAmount;
+    const [rows] = await connection.query(
+        `UPDATE Users
+        SET TotalSpent = ?
+        WHERE UserID = ?`,
+        [updatedTotalSpent, userID]
+    );
+    return true;
 }
 
 module.exports = {
@@ -137,5 +122,6 @@ module.exports = {
     getTransactionCategoriesByUserID,
     getTransactionMoneyByUserID,
     addTransaction,
+    getTotalSpent,
     updateTotalMoneySpentByUserID
 };

@@ -15,7 +15,7 @@ function Dashboard() {
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
 
     const [ moneySpent, setMoneySpent ] = useState([]);
-    const [ totalSpent, setTotalSpent ] = useState(0.0);
+    const [ totalSpent, setTotalSpent ] = useState(0.01);
     const [ transactionCategories, setTransactionCategories ] = useState({});
     const [ showDashboard, setShowDashboard ] = useState(true);
     const [ isOpen, setIsOpen ] = useState(false);
@@ -32,8 +32,12 @@ function Dashboard() {
     useEffect(() => {
         const fetchUser = async () => {
             const fetchedUser = await getUserByEmail(email);
-            setUser(fetchedUser.user);
-            setUserID(fetchedUser.userID);
+            const userObj = fetchedUser.user;
+            const userID = userObj.UserID;
+            const totalSpent = userObj.TotalSpent;
+            setUser(userObj);
+            setUserID(userID);
+            setTotalSpent(totalSpent);
         };
         fetchUser();
     }, [email]);
@@ -75,36 +79,7 @@ function Dashboard() {
         };
         fetchMoney();
     }, []);
-
-    const updateTotalMoneySpent = async () => {
-        try {
-            const values = await fetch(`${process.env.REACT_APP_API_URL}/api/update/totalSpent/${userID}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    amount: currentAmount
-                })
-            });
-            console.log("Updated response:");
-            console.log(values);
-            if (values[0].ok) {
-                const updatedMoney = values[1];
-                setTotalSpent(updatedMoney);
-            }
-        } catch (error) {
-            console.error("Error updating total money spent:", error);
-        }
-    };
     
-    useEffect(() => {
-        const fetchTotalSpent = async () => {
-            updateTotalMoneySpent();
-        };
-        fetchTotalSpent();
-    }, []);
-
     const handlePopupSubmit = () => {
         setShowDashboard(false);
         setIsOpen(true);
@@ -133,8 +108,14 @@ function Dashboard() {
                 const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);
                 const currentCategoryObj = await responseCategory.json();
                 const currentCategoryName = currentCategoryObj.categoryName;
+                
+                const responseTotalSpent = await fetch(`${process.env.REACT_APP_API_URL}/api/get/totalSpent/${userID}`);
+                const totalSpentObj = await responseTotalSpent.json();
+                const updatedTotalSpent = totalSpentObj.totalSpent;
+                
                 setMoneySpent([...moneySpent, currentAmount]);
                 setTransactionCategories([...transactionCategories, currentCategoryName]);
+                setTotalSpent(updatedTotalSpent);
                 handleClose();
             } else {
                 console.error("Transaction adding failed:", await response.text());
@@ -257,17 +238,6 @@ function Dashboard() {
                                     {totalSpent}
                                 </span>
                                 Money spent total ($)
-                            </div>
-                        </div>
-                        <div className={styles.info_box}>
-                            <div className={styles.box_icon}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M14,11H10a2,2,0,0,1,0-4h5a1,1,0,0,1,1,1,1,1,0,0,0,2,0,3,3,0,0,0-3-3H13V3a1,1,0,0,0-2,0V5H10a4,4,0,0,0,0,8h4a2,2,0,0,1,0,4H9a1,1,0,0,1-1-1,1,1,0,0,0-2,0,3,3,0,0,0,3,3h2v2a1,1,0,0,0,2,0V19h1a4,4,0,0,0,0-8Z" />
-                                </svg>
-                            </div>
-                            <div className={styles.box_content}>
-                                <span className={styles.big}>{user.WeeklySpent}</span>
-                                Money spent (this week)
                             </div>
                         </div>
                     </section>

@@ -56,11 +56,10 @@ app.post("/api/login", async (req, res) => {
 
 	try {
 		const canLogin = await database.loginUser(email, passwordHash);
-		if (canLogin) {
-			res.status(200).send(true);
-		} else {
+		if (!canLogin) {
 			console.log('Cannot login a user');
 			res.status(400).send(false);
+		res.send(true);
 		}
 	} catch (error) {
 		console.error(`Error logging in user: ${error}`);
@@ -77,9 +76,7 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 		const user = await database.getUser(email);
 		if (!user) {
 			res.status(400).send({ error: "No user was found with given email" })
-			return;
-		} else {
-			res.status(200).send({ user: user });
+		res.send({ user: user });
 		}
 	} catch (error) {
 		console.error(`Error getting a user: ${error}`);
@@ -98,7 +95,6 @@ app.get("/api/get/transactions/categories/:userID", async (req, res) => {
 	} catch (error) {
 		console.error(`Error getting a categories: ${error}`);
 		res.status(500);
-		return;
 	}
 });
 
@@ -118,11 +114,9 @@ app.get("/api/get/transactions/moneySpent/:userID", async (req, res) => {
 // Add a transaction to the database
 app.post("/api/add/transaction", async (req, res) => {
 	const { userID, currentAmount, currentCategoryID } = req.body;
-	console.log(`UserID passed: ${userID}`);
-	console.log(`Current categoryID passed: ${currentCategoryID}`);
-	console.log(`Current amount passed: ${currentAmount}`);
 	const response = await database.addTransaction(userID, currentAmount, currentCategoryID);
-	res.status(201).send(response);
+    const updateResponse = await database.updateTotalMoneySpentByUserID(userID, currentAmount);
+	res.status(201).send(response && updateResponse);
 });
 
 // Get category name by ID
@@ -131,7 +125,7 @@ app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 
 	try {
 		const categoryName = await database.getCategoryNameByID(categoryID);
-		res.status(200).send({ categoryName });
+		res.send({ categoryName });
 	} catch (error) {
 		console.error(`Error getting a category name: ${error}`);
 		res.status(500);
@@ -139,15 +133,25 @@ app.get("/api/get/categoryName/:categoryID", async (req, res) => {
 	}
 });
 
-app.post("/api/update/totalSpent/", async (req, res) => {
-	const { userID, amount } = req.body;
+// Get total spent
+app.get("/api/get/totalSpent/:userID", async (req, res) => {
+	const userID = req.params.userID;
 
-	console.log(`Amount passed to totalSpent function:`);
-	console.log(amount);
-    const values = await database.updateTotalMoneySpentByUserID(userID, amount);
-    const response = values[0];
-    const toAddValue = values[1];
-	res.send({ response: response, toAddValue: toAddValue });
+	try {
+		const totalSpent = await database.getTotalSpent(userID);
+		res.send({ totalSpent });
+	} catch (error) {
+		console.error(`Error getting a category name: ${error}`);
+		res.status(500);
+		return;
+	}
+});
+
+// Update total spent value
+app.post("/api/update/totalSpent", async (req, res) => {
+	const { userID, amount } = req.body;
+    const response = await database.updateTotalMoneySpentByUserID(userID, amount);
+	res.send(response);
 });
 
 // A request for testing
