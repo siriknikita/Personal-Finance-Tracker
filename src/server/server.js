@@ -85,6 +85,19 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 	}
 });
 
+// Get all transactions by userID
+app.get("/api/get/transactions/:userID", async (req, res) => {
+	const userID = req.params.userID;
+
+	try {
+		const transactions = await database.getTransactionsByID(userID);
+		res.send({ transactions: transactions });
+	} catch (error) {
+		console.error(`Error getting a transactions: ${error}`);
+		res.status(500);
+	}
+});
+
 // Get user's transaction categories by userID
 app.get("/api/get/transactions/categories/:userID", async (req, res) => {
 	const userID = req.params.userID;

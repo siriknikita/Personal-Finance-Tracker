@@ -90,6 +90,16 @@ async function addTransaction(userID, amount, categoryID) {
     return true;
 }
 
+async function getTransactionsByID(userID) {
+    const rows = await connection.query(
+        `SELECT *
+        FROM Transactions
+        WHERE UserID = ?`,
+        [userID]
+    );
+    return rows;
+}
+
 async function getTotalSpent(userID) {
     const [totalSpentRequest] = await connection.query(
         `SELECT TotalSpent
@@ -122,6 +132,7 @@ module.exports = {
     getTransactionCategoriesByUserID,
     getTransactionMoneyByUserID,
     addTransaction,
+    getTransactionsByID,
     getTotalSpent,
     updateTotalMoneySpentByUserID
 };

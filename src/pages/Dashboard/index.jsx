@@ -3,6 +3,7 @@ import { React, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Popup from "../../components/Popup";
 import PlotStatistics from "../../components/Plot";
+import PlotHistory from "../../components/History";
 import ToggleDisplay from "react-toggle-display";
 
 function Dashboard() {
@@ -11,15 +12,19 @@ function Dashboard() {
     const [ user, setUser ] = useState({});
     const [ userID, setUserID ] = useState(1);
     
+    // Control transaction variables
     const [ currentAmount, setCurrentAmount ] = useState(0.0);
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
-
     const [ moneySpent, setMoneySpent ] = useState([]);
     const [ totalSpent, setTotalSpent ] = useState(0.01);
     const [ transactionCategories, setTransactionCategories ] = useState({});
+
+    // Control display variables
     const [ showDashboard, setShowDashboard ] = useState(true);
     const [ isOpen, setIsOpen ] = useState(false);
+    const [ transactions, setTransactions ] = useState([]);
 
+    // Get and set user
     const getUserByEmail = async (givenEmail) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/user/email/${givenEmail}`);
@@ -42,6 +47,7 @@ function Dashboard() {
         fetchUser();
     }, [email]);
 
+    // Get and set transaction categories
     const getTransactionCategories = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${userID}`);
@@ -63,6 +69,7 @@ function Dashboard() {
         fetchCategories();
     }, []);
 
+    // Get and set money spent
     const getMoneySpent = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/moneySpent/${userID}`);
@@ -80,6 +87,24 @@ function Dashboard() {
         fetchMoney();
     }, []);
     
+    // Get and set transactions
+    const getTransactions = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/${userID}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Error retrieving transactions:", error);
+        }
+    };
+    
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            const fetchedTransactions = await getTransactions();
+            setTransactions(fetchedTransactions);
+        };
+        fetchTransactions();
+    }, []);
+
     const handlePopupSubmit = () => {
         setShowDashboard(false);
         setIsOpen(true);
@@ -90,9 +115,10 @@ function Dashboard() {
         setIsOpen(false);
     };
 
-    const handleSubmit = async (e) => {
+    const handleAddMoneyFormSubmit = async (e) => {
         e.preventDefault();
         try {
+            // fetch adding transaction route
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add/transaction`, {
                 method: "POST",
                 headers: {
@@ -105,10 +131,12 @@ function Dashboard() {
                 }),
             });
             if (response) {
+                // get category name by it's id
                 const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);
                 const currentCategoryObj = await responseCategory.json();
                 const currentCategoryName = currentCategoryObj.categoryName;
                 
+                // get updated total spent variable
                 const responseTotalSpent = await fetch(`${process.env.REACT_APP_API_URL}/api/get/totalSpent/${userID}`);
                 const totalSpentObj = await responseTotalSpent.json();
                 const updatedTotalSpent = totalSpentObj.totalSpent;
@@ -177,7 +205,8 @@ function Dashboard() {
                                 {/* Define a popup menu to prompt user to enter an amount of money he spent on a category */}
                                 <Popup trigger={isOpen} setTrigger={setIsOpen} onClose={handleClose}>
                                     <h3>Add a new transaction!</h3>
-                                    <form onSubmit={handleSubmit}>
+                                    <form onSubmit={handleAddMoneyFormSubmit}>
+                                        {/* Enter amount of money */}
                                         <label>
                                             Enter amount of money ($):
                                             <input 
@@ -190,6 +219,7 @@ function Dashboard() {
                                             />
                                         </label>
                                         <br />
+                                        {/* Choose a category */}
                                         <label>
                                             Choose a category:
                                             <select 
@@ -244,6 +274,7 @@ function Dashboard() {
                     <ToggleDisplay show={showDashboard}>
                         <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
                     </ToggleDisplay>
+                    <PlotHistory data={transactions}/>
                 </div>
             </main>
         </div>

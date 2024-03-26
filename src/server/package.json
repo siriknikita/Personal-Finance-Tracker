@@ -23,6 +23,7 @@
     "passport-google-oauth20": "^2.0.0",
     "plotly.js-dist": "^2.30.1",
     "react-native": "^0.73.6",
+    "react-table": "^7.8.0",
     "react-toggle-display": "^2.2.1",
     "regenerator-runtime": "^0.14.1",
     "supertest": "^6.3.4"
