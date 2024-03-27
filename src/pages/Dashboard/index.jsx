@@ -1,9 +1,8 @@
 import styles from "./styles.module.css";
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Popup from "../../components/Popup";
 import PlotStatistics from "../../components/Plot";
-import PlotHistory from "../../components/History";
 import ToggleDisplay from "react-toggle-display";
 
 function Dashboard() {
@@ -16,7 +15,7 @@ function Dashboard() {
     const [ currentAmount, setCurrentAmount ] = useState(0.0);
     const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
     const [ moneySpent, setMoneySpent ] = useState([]);
-    const [ totalSpent, setTotalSpent ] = useState(0.01);
+    const [ totalSpent, setTotalSpent ] = useState(0.00);
     const [ transactionCategories, setTransactionCategories ] = useState({});
 
     // Control display variables
@@ -91,7 +90,9 @@ function Dashboard() {
     const getTransactions = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/${userID}`);
-            return await response.json();
+            console.log("Response from getting a transactions:");
+            const responseObj = await response.json();
+            return responseObj;
         } catch (error) {
             console.error("Error retrieving transactions:", error);
         }
@@ -140,15 +141,25 @@ function Dashboard() {
                 const responseTotalSpent = await fetch(`${process.env.REACT_APP_API_URL}/api/get/totalSpent/${userID}`);
                 const totalSpentObj = await responseTotalSpent.json();
                 const updatedTotalSpent = totalSpentObj.totalSpent;
+
+                const currentDate = new Date();
+                const timestamp = currentDate.getTime();
                 
                 setMoneySpent([...moneySpent, currentAmount]);
                 setTransactionCategories([...transactionCategories, currentCategoryName]);
                 setTotalSpent(updatedTotalSpent);
+                setTransactions([...transactions, {
+                    TransactionID: transactions[-1].TransactionID + 1,
+                    Amount: currentAmount,
+                    CategoryID: currentCategoryID,
+                    TransactionDate: timestamp,
+                }])
                 handleClose();
             } else {
                 console.error("Transaction adding failed:", await response.text());
             }
         } catch (error) {
+            handleClose();
             console.error("Error adding a new transaction:", error);
         }
     };
@@ -270,11 +281,33 @@ function Dashboard() {
                                 Money spent total ($)
                             </div>
                         </div>
+                        <ToggleDisplay show={showDashboard}>
+                            <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
+                        </ToggleDisplay>
                     </section>
-                    <ToggleDisplay show={showDashboard}>
-                        <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
-                    </ToggleDisplay>
-                    <PlotHistory data={transactions}/>
+                    <section>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>TransactionID</th>
+                                    <th>Amount</th>
+                                    <th>CategoryID</th>
+                                    <th>TransactionDate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* The key is required for each mapped element in React lists */}
+                                {transactions.map((transaction) => (
+                                    <tr key={transaction.TransactionID}> {/* Use TransactionID as the unique key */}
+                                        <td>{transaction.TransactionID}</td>
+                                        <td>{transaction.Amount}</td>
+                                        <td>{transaction.CategoryID}</td>
+                                        <td>{transaction.TransactionDate}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </section>
                 </div>
             </main>
         </div>

@@ -14,6 +14,36 @@ body {
 	font-family: Open Sans, Helvetica, sans-serif;
 }
 
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f0f8ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+table {
+    width: 800px;
+    border-collapse: collapse;
+    overflow: scroll;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+th,
+td {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #1b253d;
+}
+th {
+    text-align: left;
+}
+thead th {
+    background-color: #4b84fe;
+}
+
 .dashboard {
 	display: grid;
 	width: 100%;

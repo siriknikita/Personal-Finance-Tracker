@@ -59,11 +59,5 @@ CREATE TABLE IF NOT EXISTS Goals (
 );
 
 SELECT * FROM Users;
-UPDATE Users
-SET TotalSpent = 123.01
-WHERE UserID = 1;
 SELECT * FROM Transactions;
-INSERT INTO Transactions (UserID, Amount, CategoryID)
-VALUES (1, 17.3, 1);
-
 SELECT * FROM Categories;

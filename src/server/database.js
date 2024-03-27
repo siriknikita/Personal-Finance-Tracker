@@ -91,7 +91,7 @@ async function addTransaction(userID, amount, categoryID) {
 }
 
 async function getTransactionsByID(userID) {
-    const rows = await connection.query(
+    const [rows] = await connection.query(
         `SELECT *
         FROM Transactions
         WHERE UserID = ?`,

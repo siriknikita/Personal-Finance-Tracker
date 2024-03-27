@@ -59,8 +59,8 @@ app.post("/api/login", async (req, res) => {
 		if (!canLogin) {
 			console.log('Cannot login a user');
 			res.status(400).send(false);
-		res.send(true);
 		}
+		res.send(true);
 	} catch (error) {
 		console.error(`Error logging in user: ${error}`);
 		res.status(500);
@@ -91,7 +91,7 @@ app.get("/api/get/transactions/:userID", async (req, res) => {
 
 	try {
 		const transactions = await database.getTransactionsByID(userID);
-		res.send({ transactions: transactions });
+		res.send(transactions);
 	} catch (error) {
 		console.error(`Error getting a transactions: ${error}`);
 		res.status(500);
