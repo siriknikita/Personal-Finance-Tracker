@@ -76,8 +76,8 @@ app.get("/api/get/user/email/:email", async (req, res) => {
 		const user = await database.getUser(email);
 		if (!user) {
 			res.status(400).send({ error: "No user was found with given email" })
-		res.send({ user: user });
 		}
+		res.send({ user: user });
 	} catch (error) {
 		console.error(`Error getting a user: ${error}`);
 		res.status(500);
