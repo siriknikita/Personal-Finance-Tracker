@@ -59,11 +59,11 @@ Before you begin, ensure you have the following:
 - Write unit tests for authentication and basic functionalities ✔️
 
 ### Week 4:
-- Finalize budgeting tools, including allocation and tracking features.
+- Finalize budgeting tools, including allocation and tracking features ✔️
 - Improve data visualization for enhanced user experience ✔️
 - Complete initial version of notification system.
-- Start development of transaction history module.
-- Write unit tests for expense tracking and income management.
+- Start development of transaction history module️ ✔️
+- Write unit tests for expense tracking and income management ️️✔️
 
 ### Week 5:
 - Implement transaction history functionality.
