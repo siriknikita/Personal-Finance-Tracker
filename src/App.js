@@ -1,14 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import Topbar from "./scenes/global/Topbar";
+import Sidebar from "./scenes/global/Sidebar";
 import axios from "axios";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import "./App.css";
+import Home from "./scenes/home";
+import Login from "./scenes/login";
+import Signup from "./scenes/signup";
+import Dashboard from "./scenes/dashboard";
 
 function App() {
     const [user, setUser] = useState(null);
+    const [theme, colorMode] = useMode();
+    const [isSidebar, setIsSidebar] = useState(true);
 
     const getUser = async () => {
         try {
@@ -25,28 +30,37 @@ function App() {
     }, []);
 
     return (
-        <div className="container">
-            <Routes>
-                <Route
-                    exact
-                    path="/"
-                    element={user ? <Home user={user} /> : <Navigate to="/login" />}
-                />
-                <Route
-                    exact
-                    path="/login"
-                    element={user ? <Navigate to="/dashboard" /> : <Login />}
-                />
-                <Route
-                    path="/signup"
-                    element={user ? <Navigate to="/" /> : <Signup />}
-                />
-                <Route
-                    path="/dashboard"
-                    element={user ? <Dashboard user={user} /> : <Dashboard />}
-                />
-            </Routes>
-        </div>
+        <ColorModeContext.Provider value={colorMode}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <div className="app">
+                    <Sidebar isSidebar={isSidebar} />
+                    <main className="content">
+                        <Topbar setIsSidebar={setIsSidebar} />
+                        <Routes>
+                            <Route 
+                                exact 
+                                path="/" 
+                                element={user ? <Home user={user} /> : <Navigate to="/login" />}
+                            />
+                            <Route
+                                exact
+                                path="/login"
+                                element={user ? <Navigate to="/dashboard" /> : <Login />}
+                            />
+                            <Route
+                                path="/signup"
+                                element={user ? <Navigate to="/" /> : <Signup />}
+                            />
+                            <Route
+                                path="/dashboard"
+                                element={<Dashboard />}
+                            />
+                        </Routes>
+                    </main>
+                </div>
+            </ThemeProvider>
+        </ColorModeContext.Provider>
     );
 }
 

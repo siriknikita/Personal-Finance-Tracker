@@ -8,19 +8,6 @@ const cookieSession = require("cookie-session");
 const app = express();
 require("dotenv").config({ path:"../../.env" });
 
-function validateLogin(email, password) {
-	const specialSymbols = "-";
-	
-	if (passwordString.length < 12 &&
-		!passwordString.includes(specialSymbols) &&
-		!emailString.includes("@")
-		) {
-			return false
-	} else {
-		return true
-	}
-}
-
 // Initialize new cookie session
 app.use(
 	cookieSession({
