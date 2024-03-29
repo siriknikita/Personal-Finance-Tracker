@@ -1,4 +1,3 @@
-require("dotenv").config({ path:"../../.env" });
 const database = require('./database.js')
 const express = require("express");
 const cors = require("cors");
@@ -7,6 +6,20 @@ const passport = require("passport");
 const authRoute = require("./routes/auth");
 const cookieSession = require("cookie-session");
 const app = express();
+require("dotenv").config({ path:"../../.env" });
+
+function validateLogin(email, password) {
+	const specialSymbols = "-";
+	
+	if (passwordString.length < 12 &&
+		!passwordString.includes(specialSymbols) &&
+		!emailString.includes("@")
+		) {
+			return false
+	} else {
+		return true
+	}
+}
 
 // Initialize new cookie session
 app.use(
@@ -25,7 +38,7 @@ app.use(passport.session());
 // Define default values of usage
 app.use(
 	cors({
-		origin: "http://localhost:3000",
+		origin: process.env.CLIENT_URL,
 		methods: "GET,POST,PUT,DELETE",
 		credentials: true,
 	})
@@ -46,7 +59,6 @@ app.post("/api/signup", async (req, res) => {
 	} catch (error) {
 		console.error(`Error signing up: ${error}`);
 		res.status(500);
-		return;
 	}
 });
 
@@ -64,7 +76,6 @@ app.post("/api/login", async (req, res) => {
 	} catch (error) {
 		console.error(`Error logging in user: ${error}`);
 		res.status(500);
-		return;
 	}
 });
 
@@ -156,7 +167,6 @@ app.get("/api/get/totalSpent/:userID", async (req, res) => {
 	} catch (error) {
 		console.error(`Error getting a category name: ${error}`);
 		res.status(500);
-		return;
 	}
 });
 
@@ -167,29 +177,11 @@ app.post("/api/update/totalSpent", async (req, res) => {
 	res.send(response);
 });
 
-// A request for testing
-app.get("/api/test/userAuth/email/:Email/password/:Password", async (req, res) => {
-	const email = req.params.Email;
-	const password = req.params.Password;
+app.get("/api/test/userAuth/email/:email/password/:password", async (req, res) => {
+	const email = req.params.email;
+	const password = req.params.password;
 
-	const specialSymbols = "-";
-	
-	if (passwordString.length < 12 &&
-		!passwordString.includes(specialSymbols) &&
-		!emailString.includes("@")
-		) {
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				resolve(false);
-			}, 100);
-		})
-	} else {
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				resolve(true);
-			}, 100);
-		})
-	}
+	res.send(validateLogin(email, password));
 });
 
 app.use("/auth", authRoute);

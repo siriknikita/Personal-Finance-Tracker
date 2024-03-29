@@ -1,16 +1,16 @@
-require("dotenv").config();
+require("dotenv").config("../../../.env");
 
-function fetchAuthData (email, password) {
-    return new Promise((resolve, reject) => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/test/userAuth/email/${email}/password/${password}`)
-            .then(response => {
-                resolve(response);
-            })
-            .catch(error => {
-                console.error("Error retrieving data:", error);
-                reject(error); // reject the promise with the error
-            });
-    });
-};
+function validateLogin(email, password) {
+	const specialSymbols = "-";
+	
+	if (password.length < 12 &&
+		!password.includes(specialSymbols) &&
+		!email.includes("@")
+		) {
+			return false
+	} else {
+		return true
+	}
+}
 
-module.exports = fetchAuthData
+module.exports = validateLogin
