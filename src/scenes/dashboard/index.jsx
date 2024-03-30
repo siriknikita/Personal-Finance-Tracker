@@ -6,6 +6,18 @@ import PlotStatistics from "../../components/Plot";
 import ToggleDisplay from "react-toggle-display";
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import AccountCircleOutlineIcon from '@mui/icons-material/AccountCircleOutlined'
+import PaymentOutlineIcon from '@mui/icons-material/PaymentOutlined'
+
+async function fetchData(url) {
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        return data;
+    } catch (error) {
+        throw new Error('Error loading data');
+    }
+}
 
 function Dashboard() {
     const location = useLocation();
@@ -26,86 +38,32 @@ function Dashboard() {
     const [ transactions, setTransactions ] = useState([]);
 
     // Get and set user
-    const getUserByEmail = async (givenEmail) => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/user/email/${givenEmail}`);
-            return await response.json();
-        } catch (error) {
-            console.error("Error retrieving user:", error);
-        }
-    };
-    
     useEffect(() => {
-        const fetchUser = async () => {
-            const fetchedUser = await getUserByEmail(email);
-            const userObj = fetchedUser.user;
-            const userID = userObj.UserID;
-            const totalSpent = userObj.TotalSpent;
-            setUser(userObj);
-            setUserID(userID);
-            setTotalSpent(totalSpent);
-        };
-        fetchUser();
-    }, [email]);
+        const fetchedUser = fetchData(`/api/get/user/email/${email}`);
+        const userObj = fetchedUser.user;
+        const userID = userObj.UserID;
+        const totalSpent = userObj.TotalSpent;
+        setUser(userObj);
+        setUserID(userID);
+        setTotalSpent(totalSpent);
+    }, []);
 
     // Get and set transaction categories
-    const getTransactionCategories = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/categories/${userID}`);
-            if (response.ok) {
-                return await response.json();
-            } else {
-                console.error("Error retrieving transactions", await response.text());
-            }
-        } catch (error) {
-            console.error("Error retrieving transactions:", error);
-        }
-    };
-
     useEffect(() => {
-        const fetchCategories = async () => {
-            const fetchedCategories = await getTransactionCategories();
-            setTransactionCategories(fetchedCategories);
-        };
-        fetchCategories();
+        const fetchedTransactionCategories = fetchData(`/api/get/transactions/categories/${userID}`);
+        setTransactionCategories(fetchedTransactionCategories);
     }, []);
 
     // Get and set money spent
-    const getMoneySpent = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/moneySpent/${userID}`);
-            return await response.json();
-        } catch (error) {
-            console.error("Error retrieving money:", error);
-        }
-    };
-    
     useEffect(() => {
-        const fetchMoney = async () => {
-            const fetchedMoney = await getMoneySpent();
-            setMoneySpent(fetchedMoney);
-        };
-        fetchMoney();
+        const fetchedMoneySpent = fetchData(`/api/get/transactions/moneySpent/${userID}`);
+        setMoneySpent(fetchedMoneySpent);
     }, []);
     
     // Get and set transactions
-    const getTransactions = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get/transactions/${userID}`);
-            console.log("Response from getting a transactions:");
-            const responseObj = await response.json();
-            return responseObj;
-        } catch (error) {
-            console.error("Error retrieving transactions:", error);
-        }
-    };
-    
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const fetchedTransactions = await getTransactions();
-            setTransactions(fetchedTransactions);
-        };
-        fetchTransactions();
+        const fetchedTransactions = fetchData(`/api/get/transactions/${userID}`);
+        setTransactions(fetchedTransactions);
     }, []);
 
     const handlePopupSubmit = () => {
@@ -135,13 +93,11 @@ function Dashboard() {
             });
             if (response) {
                 // get category name by it's id
-                const responseCategory = await fetch(`${process.env.REACT_APP_API_URL}/api/get/categoryName/${currentCategoryID}`);
-                const currentCategoryObj = await responseCategory.json();
+                const currentCategoryObj = fetchData(`/api/get/categoryName/${currentCategoryID}`);
                 const currentCategoryName = currentCategoryObj.categoryName;
                 
                 // get updated total spent variable
-                const responseTotalSpent = await fetch(`${process.env.REACT_APP_API_URL}/api/get/totalSpent/${userID}`);
-                const totalSpentObj = await responseTotalSpent.json();
+                const totalSpentObj = fetchData(`/api/get/totalSpent/${userID}`);
                 const updatedTotalSpent = totalSpentObj.totalSpent;
 
                 const currentDate = new Date();
@@ -168,14 +124,15 @@ function Dashboard() {
 
     return (
         <div className={styles.dashboard}>
+            {/* Menu */}
             <header className={styles.menu_wrap}>
                 {/* User info */}
                 <figure className={styles.user}>
+                    {/* Account icon */}
                     <div className={styles.user_avatar}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
-                        </svg>
+                        <AccountCircleOutlineIcon />
                     </div>
+                    {/* Username and Email */}
                     <figcaption>
                         {user.Username}
                         <br />
@@ -184,8 +141,8 @@ function Dashboard() {
                         </div>
                     </figcaption>
                 </figure>
+                {/* Tools */}
                 <nav>
-                    {/* Tools */}
                     <section className={styles.tools}>
                         <h3>Tools</h3>
                         {/* List of tools */}
@@ -242,23 +199,20 @@ function Dashboard() {
                     </section>
                 </nav>
             </header>
+            {/* Main part of dashboard */}
             <main className={styles.content_wrap}>
+                {/* Dashboard header */}
                 <header className={styles.content_head}>
                     <h1>Dashboard</h1>
                 </header>
+                {/* Main sections */}
                 <div className={styles.content}>
+                    {/* Section about money data */}
                     <section className={styles.info_boxes}>
                         <div className={styles.info_box}>
+                            {/* Payment icon */}
                             <div className={styles.box_icon}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width={24}
-                                    height={24}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M21 20V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1zm-2-1H5V5h14v14z" />
-                                    <path d="M10.381 12.309l3.172 1.586a1 1 0 0 0 1.305-.38l3-5-1.715-1.029-2.523 4.206-3.172-1.586a1.002 1.002 0 0 0-1.305.38l-3 5 1.715 1.029 2.523-4.206z" />
-                                </svg>
+                                <PaymentOutlineIcon />
                             </div>
                             <div className={styles.box_content}>
                                 <span className={styles.big}>
@@ -271,8 +225,11 @@ function Dashboard() {
                             <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
                         </ToggleDisplay>
                     </section>
+                    {/* Section about transactions data */}
                     <section>
+                        {/* Table with transactions data */}
                         <table>
+                            {/* Table headers */}
                             <thead>
                                 <tr>
                                     <th>TransactionID</th>
@@ -281,6 +238,7 @@ function Dashboard() {
                                     <th>TransactionDate</th>
                                 </tr>
                             </thead>
+                            {/* Table body */}
                             <tbody>
                                 {/* The key is required for each mapped element in React lists */}
                                 {transactions.map((transaction) => (

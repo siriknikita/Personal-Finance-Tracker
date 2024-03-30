@@ -33,9 +33,9 @@ function App() {
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <div className="app">
+                <div>
                     <Sidebar isSidebar={isSidebar} />
-                    <main className="content">
+                    <main>
                         <Topbar setIsSidebar={setIsSidebar} />
                         <Routes>
                             <Route 
