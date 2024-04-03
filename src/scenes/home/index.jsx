@@ -16,19 +16,19 @@ function Home(userDetails) {
                 <div className={styles.right}>
                     <h2 className={styles.from_heading}>Profile</h2>
                     <img
-                        src={user.picture}
+                        src={user?.picture}
                         alt="profile"
                         className={styles.profile_img}
                     />
                     <input
                         type="text"
-                        defaultValue={user.name}
+                        defaultValue={user?.name}
                         className={styles.input}
                         placeholder="UserName"
                     />
                     <input
                         type="text"
-                        defaultValue={user.email}
+                        defaultValue={user?.email}
                         className={styles.input}
                         placeholder="Email"
                     />

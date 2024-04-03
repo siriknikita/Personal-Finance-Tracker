@@ -40,7 +40,7 @@ function Dashboard() {
     // Get and set user
     useEffect(() => {
         const fetchedUser = fetchData(`/api/get/user/email/${email}`);
-        const userObj = fetchedUser.user;
+        const userObj = fetcheduser?.user;
         const userID = userObj.UserID;
         const totalSpent = userObj.TotalSpent;
         setUser(userObj);
@@ -134,10 +134,10 @@ function Dashboard() {
                     </div>
                     {/* Username and Email */}
                     <figcaption>
-                        {user.Username}
+                        {user?.Username}
                         <br />
                         <div className={styles.user_email}>
-                            {user.Email}
+                            {user?.Email}
                         </div>
                     </figcaption>
                 </figure>

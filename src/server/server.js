@@ -66,6 +66,21 @@ app.post("/api/login", async (req, res) => {
 	}
 });
 
+// Get user
+app.get("/api/get/user", async (req, res) => {
+	try {
+		const user = await database.getUserObj();
+		if (!user) {
+			res.status(400).send({ error: "No user was found with given email" })
+		}
+		res.send({ user: user });
+	} catch (error) {
+		console.error(`Error getting a user: ${error}`);
+		res.status(500);
+		return;
+	}
+});
+
 // Get user by email
 app.get("/api/get/user/email/:email", async (req, res) => {
 	const email = req.params.email;
