@@ -1,5 +1,5 @@
-const mysql = require('mysql2')
 require("dotenv").config({ path:"../../.env"})
+const mysql = require('mysql2')
 
 const connection = mysql.createPool({
     host: process.env.DB_HOST,
@@ -8,25 +8,12 @@ const connection = mysql.createPool({
     database: process.env.DB_NAME
 }).promise();
 
-let currentUserEmail = "";
-
 async function getUser(email) {
-    currentUserEmail = email;
     const [rows] = await connection.query(
         `SELECT *
         FROM Users
         WHERE Email = ?`,
         [email]
-    );
-    return rows[0];
-}
-
-async function getUserObj() {
-    const [rows] = await connection.query(
-        `SELECT *
-        FROM Users
-        WHERE Email = ?`,
-        [currentUserEmail]
     );
     return rows[0];
 }
@@ -141,7 +128,6 @@ module.exports = {
     getUser,
     createUser,
     loginUser,
-    getUserObj,
     getCategoryNameByID,
     getTransactionCategoriesByUserID,
     getTransactionMoneyByUserID,

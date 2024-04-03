@@ -10,16 +10,6 @@ import Login from "./scenes/login";
 import Signup from "./scenes/signup";
 import Dashboard from "./scenes/dashboard";
 
-// async function getUserData() {
-//     try {
-//         const repsonse = await fetch(`${process.env.REACT_APP_API_URL}/api/get/user`);
-//         const data = await repsonse.json();
-//         return data;
-//     } catch (error) {
-//         throw new Error('Error loading data');
-//     }
-// }
-
 async function getUser() {
     try {
         const url = `${process.env.REACT_APP_API_URL}/auth/login/success`;

@@ -91,10 +91,10 @@ const Sidebar = ({ user }) => {
                                     fontWeight="bold"
                                     sx={{ m: "10px 0 0 0" }}
                                 >
-                                    {user?.username}
+                                    {user?.Username}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                                    {user?.email}
+                                    {user?.Email}
                                 </Typography>
                             </Box>
                         </Box>
@@ -103,7 +103,7 @@ const Sidebar = ({ user }) => {
                     <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                         <Item
                             title="Dashboard"
-                            to="/"
+                            to="/dashboard"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
@@ -113,7 +113,7 @@ const Sidebar = ({ user }) => {
                             color={colors.grey[300]}
                             sx={{ m: "15px 0 5px 20px" }}
                         >
-                            Pages
+                            Tools
                         </Typography>
                         <Item
                             title="Profile Form"
