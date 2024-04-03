@@ -52,7 +52,7 @@ Before you begin, ensure you have the following:
 - Set up CI/CD pipeline for automated deployment ✔️
 
 ### Week 3:
-- Complete income management module.
+- Complete income management module ✔️
 - Enhance dashboard with data visualization components ✔️
 - Implement basic goal setting functionality.
 - Begin work on notification system.
@@ -66,11 +66,11 @@ Before you begin, ensure you have the following:
 - Write unit tests for expense tracking and income management ️️✔️
 
 ### Week 5:
-- Implement transaction history functionality.
-- Refine user interface for better usability.
+- Implement transaction history functionality ️️️️️️✔️
+- Refine user interface for better usability ✔️
 - Test and debug notification system.
 - Begin work on profile management features.
-- Write unit tests for budgeting tools and data visualization.
+- Write unit tests for budgeting tools and data visualization ✔️
 
 ### Week 6:
 - Complete profile management module.
