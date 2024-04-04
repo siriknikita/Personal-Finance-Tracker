@@ -41,6 +41,7 @@ function Dashboard() {
     // const [ transactions, setTransactions ] = useState([]);
 
     // Get and set user
+    // eslint-disable-next-line
     useEffect(() => {
         const fetchedUser = fetchData(`get/user/email/${email}`);
         console.log("Fetched user");
@@ -54,12 +55,14 @@ function Dashboard() {
     }, []);
 
     // Get and set transaction categories
+    // eslint-disable-next-line
     useEffect(() => {
         const fetchedTransactionCategories = fetchData(`get/transactions/categories/${userID}`);
         setTransactionCategories(fetchedTransactionCategories);
     }, []);
 
     // Get and set money spent
+    // eslint-disable-next-line
     useEffect(() => {
         const fetchedMoneySpent = fetchData(`get/transactions/moneySpent/${userID}`);
         setMoneySpent(fetchedMoneySpent);
