@@ -2,13 +2,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
+import Topbar from "./client/scenes/global/Topbar";
+import Sidebar from "./client/scenes/global/Sidebar";
 import axios from "axios";
-import Home from "./scenes/home";
-import Login from "./scenes/login";
-import Signup from "./scenes/signup";
-import Dashboard from "./scenes/dashboard";
+import Home from "./client/scenes/home";
+import Login from "./client/scenes/login";
+import Signup from "./client/scenes/signup";
+import Dashboard from "./client/scenes/dashboard";
 
 async function getUser() {
     try {
