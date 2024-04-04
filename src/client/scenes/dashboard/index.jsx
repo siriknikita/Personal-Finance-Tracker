@@ -6,8 +6,6 @@ import { ColorModeContext, useMode } from "../../../theme";
 // import Popup from "../../components/Popup";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
-import PlotStatistics from "../../components/Plot";
-import ToggleDisplay from "react-toggle-display";
 import PaymentOutlineIcon from '@mui/icons-material/PaymentOutlined'
 
 async function fetchData(url) {
@@ -39,7 +37,6 @@ function Dashboard() {
     const [ transactionCategories, setTransactionCategories ] = useState({});
 
     // Control display variables
-    const [ showDashboard, setShowDashboard ] = useState(true);
     // const [ isOpen, setIsOpen ] = useState(false);
     // const [ transactions, setTransactions ] = useState([]);
 
@@ -157,11 +154,7 @@ function Dashboard() {
                                         </span>
                                     </div>
                                 </div>
-                                <ToggleDisplay show={showDashboard}>
-                                    <PlotStatistics showDashboard={showDashboard} categories={transactionCategories} moneySpent={moneySpent} />
-                                </ToggleDisplay>
                             </section>
-                            {/* Section about transactions data */}
                         </div>
                     </main>
                 </div>

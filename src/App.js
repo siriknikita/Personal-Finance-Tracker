@@ -9,15 +9,14 @@ import Home from "./client/scenes/home";
 import Login from "./client/scenes/login";
 import Signup from "./client/scenes/signup";
 import Dashboard from "./client/scenes/dashboard";
+import PieChart from "./client/components/PieChart";
 
-async function getUser() {
+async function getUser(email) {
     try {
-        const url = `${process.env.REACT_APP_API_URL}/auth/login/success`;
-        const { data } = await axios.get(url, { withCredentials: true });
-        return data.user._json;
-    } catch (err) {
-        console.log(err);
-        return null;
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get/user/email/${email}`);
+        return response.data.user;
+    } catch (error) {
+        throw new Error(`Error loading data: ${error}`);
     }
 }
 
@@ -41,7 +40,7 @@ function App() {
         fetchData();
     }, []);
 
-    return ( user ? (
+    return (
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
@@ -53,40 +52,25 @@ function App() {
                             <Route
                                 exact
                                 path="/login"
-                                element={user ? <Navigate to="/login" /> : <Login />}
+                                element={user ? <Navigate to="/dashboard" /> : <Login />}
+                            />
+                            <Route
+                                path="/signup"
+                                element={user ? <Navigate to="/" /> : <Signup />}
                             />
                             <Route
                                 path="/dashboard"
-                                element={<Dashboard />}
+                                element={user ? <Dashboard user={user} /> : <Dashboard />}
+                            />
+                            <Route
+                                path="/pie"
+                                element={<PieChart userID={user?.UserID}/>}
                             />
                         </Routes>
                     </main>
                 </div>
             </ThemeProvider>
-        </ColorModeContext.Provider>) : (
-            <div className="container">
-                <Routes>
-                    <Route
-                        exact
-                        path="/"
-                        element={user ? <Home user={user} /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        exact
-                        path="/login"
-                        element={user ? <Navigate to="/dashboard" /> : <Login />}
-                    />
-                    <Route
-                        path="/signup"
-                        element={user ? <Navigate to="/" /> : <Signup />}
-                    />
-                    <Route
-                        path="/dashboard"
-                        element={user ? <Dashboard user={user} /> : <Dashboard />}
-                    />
-                </Routes>
-            </div>
-        )
+        </ColorModeContext.Provider>
     );
 }
 

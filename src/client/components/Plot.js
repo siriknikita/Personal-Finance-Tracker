@@ -7,12 +7,10 @@ function plotExpenseStat(divID, categories, moneySpent) {
     Plotly.newPlot(divID, data, layout);
 }
 
-function PlotStatistics({ showDashboard, categories, moneySpent }) {
+function PlotStatistics({ categories, moneySpent }) {
     useEffect(() => {
-        if (showDashboard) {
-            plotExpenseStat("chartDiv", categories, moneySpent);
-        }
-    }, [showDashboard, categories, moneySpent]);
+        plotExpenseStat("chartDiv", categories, moneySpent);
+    }, [categories, moneySpent]);
 
     return <div id='chartDiv'></div>;
 }
