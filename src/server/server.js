@@ -164,13 +164,6 @@ app.post("/api/update/totalSpent", async (req, res) => {
 	res.send(response);
 });
 
-app.get("/api/test/userAuth/email/:email/password/:password", async (req, res) => {
-	const email = req.params.email;
-	const password = req.params.password;
-
-	res.send(validateLogin(email, password));
-});
-
 app.use("/auth", authRoute);
 
 const port = process.env.PORT || 8080;

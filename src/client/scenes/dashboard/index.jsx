@@ -2,10 +2,10 @@ import styles from "./styles.module.css";
 import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "../../theme";
+import { ColorModeContext, useMode } from "../../../theme";
 // import Popup from "../../components/Popup";
-import Topbar from "../../scenes/global/Topbar";
-import Sidebar from "../../scenes/global/Sidebar";
+import Topbar from "../global/Topbar";
+import Sidebar from "../global/Sidebar";
 import PlotStatistics from "../../components/Plot";
 import ToggleDisplay from "react-toggle-display";
 import PaymentOutlineIcon from '@mui/icons-material/PaymentOutlined'
