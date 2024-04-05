@@ -1,4 +1,3 @@
-/* eslint-disable */
 import styles from "./styles.module.css";
 import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -33,9 +32,7 @@ function Dashboard() {
     // Control transaction variables
     // const [ currentAmount, setCurrentAmount ] = useState(0.0);
     // const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
-    const [ moneySpent, setMoneySpent ] = useState([]);
     const [ totalSpent, setTotalSpent ] = useState(0.00);
-    const [ transactionCategories, setTransactionCategories ] = useState({});
 
     // Control display variables
     // const [ isOpen, setIsOpen ] = useState(false);
@@ -55,20 +52,6 @@ function Dashboard() {
         setTotalSpent(totalSpent);
     }, [email]);
 
-    // Get and set transaction categories
-    // eslint-disable-next-line
-    useEffect(() => {
-        const fetchedTransactionCategories = fetchData(`get/transactions/categories/${userID}`);
-        setTransactionCategories(fetchedTransactionCategories);
-    }, [userID]);
-
-    // Get and set money spent
-    // eslint-disable-next-line
-    useEffect(() => {
-        const fetchedMoneySpent = fetchData(`get/transactions/moneySpent/${userID}`);
-        setMoneySpent(fetchedMoneySpent);
-    }, [userID]);
-    
     // Get and set transactions
     // useEffect(() => {
     //     const fetchedTransactions = fetchData(`/api/get/transactions/${userID}`);
