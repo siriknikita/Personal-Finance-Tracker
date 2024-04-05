@@ -2,13 +2,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Topbar from "./client/scenes/global/Topbar";
-import Sidebar from "./client/scenes/global/Sidebar";
+import Topbar from "../client/scenes/global/Topbar";
+import Sidebar from "../client/scenes/global/Sidebar";
 import axios from "axios";
-import Login from "./client/scenes/login";
-import Signup from "./client/scenes/signup";
-import Dashboard from "./client/scenes/dashboard";
-import PieChart from "./client/components/PieChart";
+import Login from "../client/scenes/login";
+import Signup from "../client/scenes/signup";
+import Dashboard from "../client/scenes/dashboard";
+import PieChart from "../client/scenes/pieChart";
 
 async function getUser(email) {
     try {

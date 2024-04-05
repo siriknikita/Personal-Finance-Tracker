@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../../theme";
+import { tokens } from "../../../src/theme";
+import { DashboardContext } from "../dashboard";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -28,11 +29,12 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     );
 };
 
-const Sidebar = ({ user }) => {
+const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
+    const user = useContext(DashboardContext);
 
     return (
         <Box

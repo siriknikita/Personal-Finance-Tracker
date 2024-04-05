@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser")
 const passport = require("passport");
-const authRoute = require("./routes/auth");
+const authRoute = require("./routes/auth.js");
 const cookieSession = require("cookie-session");
 const app = express();
 require("dotenv").config({ path:"../../.env" });
