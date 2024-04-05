@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 import { useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../../../theme";
 // import Popup from "../../components/Popup";
@@ -25,7 +25,7 @@ function Dashboard() {
     const location = useLocation();
     const email = location.state.userEmail;
     const [ user, setUser ] = useState({});
-    const [ userID, setUserID ] = useState(1);
+    // const [ userID, setUserID ] = useState(1);
     const [ theme, colorMode ] = useMode();
     const [ isSidebar, setIsSidebar ] = useState(true);
     
@@ -34,21 +34,17 @@ function Dashboard() {
     // const [ currentCategoryID, setCurrentCategoryID ] = useState(1);
     const [ totalSpent, setTotalSpent ] = useState(0.00);
 
-    // Control display variables
-    // const [ isOpen, setIsOpen ] = useState(false);
-    // const [ transactions, setTransactions ] = useState([]);
-
     // Get and set user
     // eslint-disable-next-line
-    useEffect(() => {
+    useLayoutEffect(() => {
         const fetchedUser = fetchData(`get/user/email/${email}`);
         console.log("Fetched user");
         console.log(fetchedUser);
         const userObj = fetchedUser?.user;
-        const userID = userObj?.UserID;
+        // const userID = userObj?.UserID;
         const totalSpent = userObj?.TotalSpent;
         setUser(userObj);
-        setUserID(userID);
+        // setUserID(userID);
         setTotalSpent(totalSpent);
     }, [email]);
 

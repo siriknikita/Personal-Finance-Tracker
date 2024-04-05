@@ -5,7 +5,6 @@ import { ColorModeContext, useMode } from "./theme";
 import Topbar from "./client/scenes/global/Topbar";
 import Sidebar from "./client/scenes/global/Sidebar";
 import axios from "axios";
-import Home from "./client/scenes/home";
 import Login from "./client/scenes/login";
 import Signup from "./client/scenes/signup";
 import Dashboard from "./client/scenes/dashboard";
@@ -38,7 +37,7 @@ function App() {
             }
         };
         fetchData();
-    }, []);
+    }, [isRegistered]);
 
     return (
         <ColorModeContext.Provider value={colorMode}>
