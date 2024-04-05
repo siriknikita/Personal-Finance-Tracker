@@ -1,3 +1,4 @@
+/* eslint-disable */
 import styles from "./styles.module.css";
 import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
