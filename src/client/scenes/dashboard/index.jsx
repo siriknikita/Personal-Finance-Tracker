@@ -52,21 +52,21 @@ function Dashboard() {
         setUser(userObj);
         setUserID(userID);
         setTotalSpent(totalSpent);
-    }, []);
+    }, [email]);
 
     // Get and set transaction categories
     // eslint-disable-next-line
     useEffect(() => {
         const fetchedTransactionCategories = fetchData(`get/transactions/categories/${userID}`);
         setTransactionCategories(fetchedTransactionCategories);
-    }, []);
+    }, [userID]);
 
     // Get and set money spent
     // eslint-disable-next-line
     useEffect(() => {
         const fetchedMoneySpent = fetchData(`get/transactions/moneySpent/${userID}`);
         setMoneySpent(fetchedMoneySpent);
-    }, []);
+    }, [userID]);
     
     // Get and set transactions
     // useEffect(() => {
