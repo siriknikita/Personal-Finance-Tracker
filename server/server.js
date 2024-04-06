@@ -6,7 +6,7 @@ const passport = require("passport");
 const authRoute = require("./routes/auth.js");
 const cookieSession = require("cookie-session");
 const app = express();
-require("dotenv").config({ path:"../../.env" });
+require("dotenv").config({ path: "./.env" });
 
 // Initialize new cookie session
 app.use(
@@ -32,36 +32,48 @@ app.use(
 );
 
 // Handle user's signing up
-app.post("/api/signup", async (req, res) => {
-	const { username, email, passwordHash } = req.body;
+app.get("/api/signup/:username/:email/:password", async (req, res) => {
+	const username = req.params.username;
+	const email = req.params.email;
+	const password = req.params.password;
 
 	try {
 		const user = await database.getUser(email);
 		if (user) {
-			res.status(400).send({ error: "email already taken" });
+			res.status(400).send({ error: "User with given email already exists" });
 			return;
 		}
-		const userID = await database.createUser(username, email, passwordHash);
-		res.send({ userID });
+		console.log("User was not found");
+		const response = await database.createUser(username, email, password);
+		res.send({ response });
 	} catch (error) {
 		console.error(`Error signing up: ${error}`);
 		res.status(500);
 	}
 });
 
-// Handle user's loggin in
-app.post("/api/login", async (req, res) => {
-	const { email, passwordHash } = req.body;
+app.get("/api/login/:email/:password", async (req, res) => {
+	const email = req.params.email;
+	const password = req.params.password;
+
+	console.log(email, password);
 
 	try {
-		const canLogin = await database.loginUser(email, passwordHash);
-		if (!canLogin) {
-			console.log('Cannot login a user');
-			res.status(400).send(false);
+		const user = await database.getUser(email);
+		if (!user) {
+			res.status(400).send({ error: "No user was found with given email" });
+			return;
 		}
-		res.send(true);
+		console.log("User was found");
+		const isPasswordCorrect = user.PasswordHash == password;
+		if (!isPasswordCorrect) {
+			res.status(400).send({ error: "Password is incorrect" });
+			return;
+		}
+		console.log("Password is correct");
+		res.send({ user });
 	} catch (error) {
-		console.error(`Error logging in user: ${error}`);
+		console.error(`Error logging in: ${error}`);
 		res.status(500);
 	}
 });

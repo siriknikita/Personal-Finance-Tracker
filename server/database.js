@@ -1,4 +1,4 @@
-require("dotenv").config({ path:"../../.env"})
+require("dotenv").config({ path: "./.env" })
 const mysql = require('mysql2')
 
 const connection = mysql.createPool({
@@ -15,6 +15,7 @@ async function getUser(email) {
         WHERE Email = ?`,
         [email]
     );
+    console.log(rows[0]);
     return rows[0];
 }
 

@@ -2,6 +2,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { React, useState } from "react";
 import styles from "./styles.module.css";
 
+async function fetchGet(url) {
+    try {
+        let response = await fetch(`${process.env.REACT_APP_API_URL}/api/${url}`);
+        console.log(response);
+        console.log(response.json());
+        let responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        throw new Error(`Error getting data: ${error}`);
+    }
+}
+
 function Signup() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -18,23 +30,13 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const responce = await fetch(`${process.env.REACT_APP_API_URL}/api/signup`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    passwordHash: passwordHash
-                }),
-            });
-            if (responce.ok) {
-                console.log("User signed up successfully!");
-                navigate("/dashboard", { state: { userEmail: email } });
-            } else {
-                console.error("Signup failed:", await responce.text());
+            let response = await fetchGet(`signup/${username}/${email}/${passwordHash}`);
+            if (response.error) {
+                alert(response.error);
+                return;
             }
+            console.log("User was created");
+            navigate("/dashboard", { state: { user: response.user } });
         } catch (error) {
             console.error("Error signing up:", error);
         }

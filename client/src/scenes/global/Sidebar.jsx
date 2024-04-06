@@ -1,15 +1,15 @@
-import React, { useState, useContext } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
-import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../../src/theme";
-import { DashboardContext } from "../dashboard";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
+import "react-pro-sidebar/dist/css/styles.css";
+import { Link } from "react-router-dom";
+import { tokens } from "../../theme";
+import { DashboardContext } from "../dashboard/index";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();

@@ -2,6 +2,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { React, useState } from "react";
 import styles from "./styles.module.css";
 
+async function fetchGet(url) {
+    try {
+        let response = await fetch(`http://localhost:8080/api/${url}`);
+        let responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        throw new Error(`Error getting data: ${error}`);
+    }
+}
+
 function Login() {
     const [email, setEmail] = useState("");
     const [passwordHash, setPasswordHash] = useState("");
@@ -9,7 +19,7 @@ function Login() {
 
     const googleAuth = () => {
         window.open(
-            `${process.env.REACT_APP_API_URL}/auth/google/callback`,
+            `http://localhost:8080/auth/google/callback`,
             "_self"
         );
     };
@@ -17,22 +27,19 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: email,
-                    passwordHash: passwordHash
-                })
-            });
-            if (response.ok) {
-                console.log("User logged in successfully!");
-                navigate("/dashboard", { state: { userEmail: email } });
-            } else {
-                console.error("Login failed:", await response.text());
+            let response = await fetchGet(`login/${email}/${passwordHash}`);
+            if (response.error) {
+                alert(response.error);
+                return;
             }
+            console.log("User was found");
+            console.log("Url:");
+            console.log(response.url);
+            console.log("Response:");
+            console.log(response);
+            const hypotheticalUser = await response.json();
+            console.log(hypotheticalUser);
+            navigate("/dashboard", { state: { user: hypotheticalUser } });
         } catch (error) {
             console.error("Error logging in:", error);
         }
