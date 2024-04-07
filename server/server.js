@@ -61,7 +61,7 @@ app.get("/api/login/:email/:password", async (req, res) => {
 	try {
 		const user = await database.getUser(email);
 		if (!user) {
-			res.status(400).send({ error: "No user was found with given email" });
+			res.status(400).send({ error: "No user was found with given email..." });
 			return;
 		}
 		console.log("User was found");
