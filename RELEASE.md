@@ -1,4 +1,3 @@
----
 ## Release Information
 **Version:** 1.0
 
