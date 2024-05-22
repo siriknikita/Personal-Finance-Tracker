@@ -1,55 +1,36 @@
-import styles from "./styles.module.css";
-import { useLocation } from "react-router-dom";
-import React, { createContext } from "react";
-import PaymentOutlineIcon from '@mui/icons-material/PaymentOutlined'
+import React, { createContext, useContext, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { UserContext } from '../../App';
+import Header from '../../components/Header';
+import PieChartSkeleton from '../../components/PieChartSkeleton';
+import CategoriesPieChart from '../../components/categoriesPieChart';
+import styles from './styles.module.css';
 
-export const DashboardContext = createContext();
-
-// async function fetchData(url) {
-//     console.log(url);
-//     try {
-//         let response = await fetch(`${process.env.REACT_APP_API_URL}/api/${url}`);
-//         let data = await response.json();
-//         console.log("Data:");
-//         console.log(data);
-//         return data;
-//     } catch (error) {
-//         throw new Error(`Error loading data: ${error}`);
-//     }
-// }
+// Move context to another file
+// TODO: Move context and associated stuff into separate component to avoid circular dependency
+export const LoadingContet = createContext(null);
 
 function Dashboard() {
-    const location = useLocation();
-    const user = location.state.user;
+    const { user } = useContext(UserContext);
+    const [showPieChart, setShowPieChart] = useState(false);
 
     return (
-        <DashboardContext.Provider value={ user }>
-            <div className="app">
-                <main className="content">
-                    {/* Dashboard header */}
-                    <header className={styles.content_head}>
-                        <h1>Dashboard</h1>
-                    </header>
-                    {/* Main sections */}
-                    <div className={styles.content}>
-                        {/* Section about money data */}
-                        <section className={styles.info_boxes}>
-                            <div className={styles.info_box}>
-                                {/* Payment icon */}
-                                <div className={styles.box_icon}>
-                                    <PaymentOutlineIcon />
-                                </div>
-                                <div className={styles.box_content}>
-                                    <span className={styles.big}>
-                                        {user.TotalSpent}
-                                    </span>
-                                </div>
-                            </div>
-                        </section>
+        <>
+            <Helmet>
+                <title>Dashboard</title>
+            </Helmet>
+            <Header title="Dashboard" subtitle="Welcome to your dashboard" />
+            <div className={styles.content}>
+                <section className={styles.info_boxes}>
+                    <div className={styles.info_box}>
+                        <LoadingContet.Provider value={{ setShowPieChart }}>
+                            {!showPieChart && <PieChartSkeleton />}
+                            <CategoriesPieChart userID={user.userID} />
+                        </LoadingContet.Provider>
                     </div>
-                </main>
+                </section>
             </div>
-        </DashboardContext.Provider>
+        </>
     );
 }
 

@@ -25,7 +25,7 @@ body {
     flex-wrap: wrap;
     align-content: flex-start;
 }
-table {
+/* table {
     width: 800px;
     border-collapse: collapse;
     overflow: scroll;
@@ -42,7 +42,7 @@ th {
 }
 thead th {
     background-color: #4b84fe;
-}
+} */
 
 .dashboard {
 	display: grid;

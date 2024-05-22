@@ -1,0 +1,24 @@
+{
+  "short_name": "PFT",
+  "name": "Personal Finance Tracker",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "logo-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

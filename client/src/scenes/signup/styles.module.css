@@ -32,11 +32,11 @@
     display: flex;
     vertical-align: middle;
     text-align: center;
-    margin-top: 45px;
+    margin-top: 15px;
     width: 800px;
     height: 450px;
     background-color: white;
-    box-shadow: 3px 4px 36px -6px rgba(0,0,0,0.4);
+    box-shadow: 3px 4px 36px -6px rgba(0, 0, 0, 0.4);
     border-radius: 50px;
 }
 
@@ -92,7 +92,6 @@
     outline: none;
     border: none;
     cursor: pointer;
-    
 }
 
 .text {
@@ -102,7 +101,7 @@
     padding: 0;
 }
 
-.text > a{
+.text > a {
     font-size: 16px;
     font-weight: 500;
     color: #ffc801;
@@ -115,7 +114,8 @@
     border: none;
     outline: none;
     background-color: white;
-    box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px,
+        rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
     font-size: 16px;
     font-weight: 500;
     margin: 0 0 20px 0;
@@ -127,12 +127,12 @@
     position: relative;
 }
 
-.google_btn > img{
+.google_btn > img {
     width: 30px;
     height: 30px;
     object-fit: cover;
 }
 
-.google_btn > span{
+.google_btn > span {
     margin-left: 10px;
 }

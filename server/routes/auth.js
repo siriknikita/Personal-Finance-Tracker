@@ -1,38 +1,74 @@
-const router = require("express").Router();
-const passport = require("passport");
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const { createUser, loginUser } = require("../services/userService");
+const { User } = require("../models");
 
-router.get("/login/success", (req, res) => {
-	if (req.user) {
-		res.status(200).json({
-			error: false,
-			message: "Successfully Loged In",
-			user: req.user,
-		});
-	} else {
-		res.status(403).json({ error: true, message: "Not Authorized" });
-	}
+router.use(bodyParser.json());
+router.use(express.json());
+
+router.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const newUser = await createUser(username, email, password);
+    if (newUser === "User already exists") {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    res
+      .status(201)
+      .json({ message: "User created successfully", user: newUser });
+  } catch (error) {
+    console.error(`Error registering user: ${error}`);
+    res.status(500).send("Error registering user");
+  }
 });
 
-router.get("/login/failed", (req, res) => {
-	res.status(401).json({
-		error: true,
-		message: "Log in failure",
-	});
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password, isGoogle } = req.body;
+    const user = await loginUser(email, password, isGoogle);
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = password === user.passwordHash;
+    if (!isMatch && !isGoogle) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    console.log("The passwords did match");
+
+    const token = jwt.sign(
+      { id: user.userID, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ message: "Logged in successfully", token: token, user: user });
+  } catch (error) {
+    console.error(`Error logging in user: ${error}`);
+    res.status(500).send("Error logging in user");
+  }
 });
 
-router.get("/google", passport.authenticate("google", ["profile", "email"]));
+router.get("/me", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
 
-router.get(
-	"/google/callback",
-	passport.authenticate("google", {
-		successRedirect: process.env.CLIENT_URL,
-		failureRedirect: "/login/failed",
-	})
-);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-router.get("/logout", (req, res) => {
-	req.logout();
-	res.redirect(process.env.CLIENT_URL);
+    res.json({ user });
+  } catch (error) {
+    console.error(`Error fetching user details: ${error}`);
+    res.status(500).send("Error fetching user details");
+  }
 });
 
 module.exports = router;

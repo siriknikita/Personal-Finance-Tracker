@@ -1,18 +1,20 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
-import { ColorModeContext, tokens } from "../../../src/theme";
-import InputBase from "@mui/material/InputBase";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { Box, IconButton, useTheme } from '@mui/material';
+import InputBase from '@mui/material/InputBase';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ColorModeContext, tokens } from '../../../src/theme';
 
 const Topbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const navigate = useNavigate();
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>
@@ -31,7 +33,7 @@ const Topbar = () => {
             {/* ICONS */}
             <Box display="flex">
                 <IconButton onClick={colorMode.toggleColorMode}>
-                    {theme.palette.mode === "dark" ? (
+                    {theme.palette.mode === 'dark' ? (
                         <DarkModeOutlinedIcon />
                     ) : (
                         <LightModeOutlinedIcon />
@@ -40,10 +42,10 @@ const Topbar = () => {
                 <IconButton>
                     <NotificationsOutlinedIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={() => navigate('/profileForm')}>
                     <SettingsOutlinedIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={() => navigate('/profile')}>
                     <PersonOutlinedIcon />
                 </IconButton>
             </Box>
