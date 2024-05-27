@@ -22,18 +22,8 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    totalSpent: {
-      type: DataTypes.DECIMAL(18, 0),
-      allowNull: false,
-      defaultValue: 0,
-    },
-    weeklySpent: {
-      type: DataTypes.DECIMAL(18, 0),
-      allowNull: false,
-      defaultValue: 0,
-    },
     registrationDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },

@@ -6,9 +6,9 @@ import {
 } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
-import { fetchData } from "../../utils/dataProcessing";
+import { fetchData } from "../../services/dataProcessing";
 import { formTableColumns } from "../../utils/tables";
-import styles from "./styles.module.css";
+import styles from "../styles.module.css";
 
 function GoalTable() {
   const { user } = useContext(UserContext);

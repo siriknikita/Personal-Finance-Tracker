@@ -48,12 +48,10 @@ async function getUniqueCategoriesList(userID) {
 
 async function getTransactionMoneyByUserID(userID) {
   try {
-    console.log("User ID:", userID);
     const transactions = await Transaction.findAll({
       where: { userID: userID },
       attributes: ["amount"],
     });
-    console.log("Transactions: ", transactions);
 
     return transactions.map((transaction) => transaction.dataValues.amount);
   } catch (error) {
@@ -86,7 +84,6 @@ async function addTransaction(userID, amount, categoryID) {
 }
 
 async function getTransactionsByID(userID) {
-  console.error("[GET TRANSACTIONS BY ID] userID: " + userID);
   try {
     return await Transaction.findAll({ where: { userID } });
   } catch (error) {

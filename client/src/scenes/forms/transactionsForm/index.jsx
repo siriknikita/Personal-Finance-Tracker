@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { UserContext } from "../../../App";
-import Header from "../../../components/Header";
+import { Header } from "../../../components";
 import { sendPostData } from "../../../services/dataProcessing";
 
 const schema = z.object({
@@ -28,7 +28,7 @@ function TransactionForm() {
 
   const onSubmit = async (data) => {
     try {
-      await sendPostData("/api/transactions/add", {
+      await sendPostData("transactions/add", {
         userID: user.userID,
         amount: data.amount,
         categoryID: data.categoryID,

@@ -27,7 +27,7 @@ function Signup() {
           }
         );
         const data = res.data;
-        const user = await registerUser(data.email);
+        const user = await registerUser(data.email, true);
         setUser(user);
         setIsAuthorized(true);
         navigate("/dashboard");

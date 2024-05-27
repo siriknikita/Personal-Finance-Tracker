@@ -9,12 +9,22 @@ import InputBase from '@mui/material/InputBase';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ColorModeContext, tokens } from '../../../src/theme';
+import { UserContext } from '../../App';
+import { LogoutOutlined } from '@mui/icons-material';
 
 const Topbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const { setIsAuthorized } = useContext(UserContext);
     const navigate = useNavigate();
+
+    function logout() {
+        localStorage.removeItem('user');
+        localStorage.setItem('isAuthorized', false);
+        setIsAuthorized(false);
+        navigate('/');
+    }
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>
@@ -47,6 +57,9 @@ const Topbar = () => {
                 </IconButton>
                 <IconButton onClick={() => navigate('/profile')}>
                     <PersonOutlinedIcon />
+                </IconButton>
+                <IconButton onClick={() => logout()}>
+                    <LogoutOutlined />
                 </IconButton>
             </Box>
         </Box>

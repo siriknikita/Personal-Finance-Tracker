@@ -24,6 +24,10 @@ const Transaction = sequelize.define('Transaction', {
             model: Category,
             key: 'id'
         }
+    },
+    amount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     }
 }, {
     timestamps: false

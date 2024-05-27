@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../../../App";
-import Header from "../../../components/Header";
+import { Header } from "../../../components";
 import { sendPostData } from "../../../services/dataProcessing";
 
 function ProfileForm() {
@@ -22,7 +22,7 @@ function ProfileForm() {
     try {
       switch (currentOption) {
         case "username":
-          await sendPostData("/api/update/username", {
+          await sendPostData("update/username", {
             email: user.email,
             currentUsername,
             newUsername,
@@ -31,7 +31,7 @@ function ProfileForm() {
           navigate("/dashboard");
           break;
         case "email":
-          await sendPostData("/api/update/email", {
+          await sendPostData("update/email", {
             email: user.email,
             newEmail,
           });
@@ -39,7 +39,7 @@ function ProfileForm() {
           navigate("/dashboard");
           break;
         case "password":
-          await sendPostData("/api/update/password", {
+          await sendPostData("update/password", {
             email: user.email,
             newPasswordHash: newPassword,
           });

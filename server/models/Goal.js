@@ -1,26 +1,35 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const User = require('./User');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database");
+const User = require("./User");
 
-const Goal = sequelize.define('Goal', {
+const Goal = sequelize.define(
+  "Goals",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     userID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User,
-            key: 'userID'
-        }
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "userID",
+      },
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     deadline: {
-        type: DataTypes.DATE,
-        allowNull: false
-    }
-}, {
-    timestamps: false
-});
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
 
 module.exports = Goal;

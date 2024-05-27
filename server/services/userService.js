@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const moment = require("moment");
 require("dotenv").config();
+const bcrypt = require("bcryptjs");
 
 async function getUser(email) {
   try {
@@ -8,6 +9,14 @@ async function getUser(email) {
     return await User.findOne({ where: { email: email, isAdmin: isAdmin } });
   } catch (error) {
     console.error("[GET USER] Error: " + error);
+  }
+}
+
+async function getUserByID(userID) {
+  try {
+    return await User.findOne({ where: { userID: userID } });
+  } catch (error) {
+    console.error("[GET USER BY ID] Error: " + error);
   }
 }
 
@@ -19,44 +28,65 @@ async function getUsers() {
   }
 }
 
-async function createUser(username, email, passwordHash) {
+
+async function createUser(username, email, password, isGoogle = false) {
   try {
     const existingUser = await getUser(email);
     if (existingUser) {
       return "User already exists";
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
     const newUser = await User.create({
       username,
       email,
-      passwordHash,
+      passwordHash: isGoogle ? "": passwordHash,
       registrationDate: moment().toDate(),
       isAuthorized: true,
       isAdmin: false,
     });
 
-    return newUser;
+    return newUser.dataValues;
   } catch (error) {
     console.error("[CREATE USER] Error: " + error);
   }
 }
 
-async function loginUser(email, password, isGoogle=false) {
+async function loginUser(email, password, isGoogle = false) {
   try {
     const userData = await getUser(email);
-    if (userData && isGoogle) {
-      userData.isAuthorized = true;
-      await userData.save()
-      return userData.dataValues;
-    } else if (userData && !isGoogle && userData.passwordHash === password) {
-      userData.isAuthorized = true;
-      await userData.save()
-      return userData.dataValues;
-    } else {
+    // If the user is logging in with Google, we don't need to check the password
+    if (!userData) {
       return null;
     }
+    if (!isGoogle) {
+      const passwordMatch = await bcrypt.compare(password, userData.dataValues.passwordHash);
+      if (!passwordMatch) {
+        return null;
+      }
+    }
+    userData.isAuthorized = true;
+    await userData.save();
+    return userData.dataValues;
   } catch (error) {
     console.error("[LOGIN USER] Error: " + error);
+  }
+}
+
+
+async function updateTotalSpent(userID, amount) {
+  try {
+    const user = await getUserByID(userID);
+    if (user) {
+      user.totalSpent += amount;
+      await user.save();
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("[UPDATE TOTAL SPENT] Error: " + error);
   }
 }
 
@@ -110,6 +140,7 @@ module.exports = {
   getUsers,
   createUser,
   loginUser,
+  updateTotalSpent,
   updateEmail,
   updatePassword,
   updateUsername,

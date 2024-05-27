@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../App";
-import Header from "../../components/Header";
+import { Header } from "../../components";
 
 function Profile() {
   const { user } = useContext(UserContext);

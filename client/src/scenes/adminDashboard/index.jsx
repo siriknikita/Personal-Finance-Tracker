@@ -1,7 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import Header from "../../components/Header";
-import BehaviourBarChart from "../../components/behaviourBarChart";
+import { BehaviourBarChart, Header } from "../../components";
 import styles from "./styles.module.css";
 
 function AdminDashboard() {

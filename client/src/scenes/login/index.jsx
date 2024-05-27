@@ -1,18 +1,31 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { React, useContext, useState } from "react";
+import { React, useContext } from "react";
 import { Helmet } from "react-helmet";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { z } from "zod";
 import { UserContext } from "../../App";
+import { googleLoginUser, loginUser } from "../../services/auth";
 import styles from "./styles.module.css";
-import { loginUser } from "../../services/auth";
+
+const schema = z.object({
+  email: z.string().email(),
+  passwordHash: z.string().min(8),
+});
 
 function Login() {
   const { setUser, setIsAuthorized } = useContext(UserContext);
-  const [email, setEmail] = useState("");
-  const [passwordHash, setPasswordHash] = useState("");
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (respose) => {
@@ -26,7 +39,7 @@ function Login() {
           }
         );
         const email = res.data.email;
-        const user = await loginUser(email, true);
+        const user = await googleLoginUser(email);
         setUser(user);
         setIsAuthorized(true);
         navigate("/dashboard");
@@ -38,11 +51,11 @@ function Login() {
     },
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
+      const { email, passwordHash } = data;
       const isAdmin = email === "admin@email.com";
-      const user = await loginUser(email);
+      const user = await loginUser(email, passwordHash);
       setUser(user);
       setIsAuthorized(true);
       if (isAdmin) {
@@ -73,30 +86,37 @@ function Login() {
           </div>
           <div className={styles.right}>
             <h2 className={styles.from_heading}>Members Log in</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <input
+                {...register("email", {
+                  required: "Email is required",
+                })}
                 type="text"
                 className={styles.input}
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              {!errors.email && <br />}
+              {errors.email && <div className={styles.error_message}>{errors.email.message}</div>}
               <input
+                {...register("passwordHash", {
+                  required: "Password is required",
+                })}
                 type="password"
                 className={styles.input}
                 placeholder="Password"
-                value={passwordHash}
-                onChange={(e) => setPasswordHash(e.target.value)}
                 required
               />
-              <br />
-              <button className={styles.btn}>Log In</button>
+              {!errors.passwordHash && <br />}
+              {errors.passwordHash && <div className={styles.error_message}>{errors.passwordHash.message}</div>}
+              <button disabled={isSubmitting} className={styles.btn}>
+                {isSubmitting ? "Logging in..." : "Log in"}
+              </button>
             </form>
             <p className={styles.text}>or</p>
-            <button className={styles.google_btn} onClick={googleLogin}>
+            <button disabled={isSubmitting} className={styles.google_btn} onClick={googleLogin}>
               <img src="./images/google.png" alt="google icon" />
-              <span>Sing in with Google</span>
+              Sing in with Google
             </button>
             <p className={styles.text}>
               New Here ? <Link to="/signup">Sing Up</Link>

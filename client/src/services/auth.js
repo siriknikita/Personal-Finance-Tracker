@@ -1,24 +1,33 @@
 import { extractPasswordFromEmail } from "../utils/auth";
 import { sendPostData } from "./dataProcessing";
 
-export async function loginUser(email, isGoogle=false) {
-  const passwordHash = extractPasswordFromEmail(email);
+export async function googleLoginUser(email) {
   const response = await sendPostData(`auth/login`, {
     email: email,
-    password: passwordHash,
-    isGoogle: isGoogle,
+    passwordHash: extractPasswordFromEmail(email),
+    isGoogle: true,
+  }, 'user');
+  return response;
+}
+
+export async function loginUser(email, passwordHash) {
+  const response = await sendPostData(`auth/login`, {
+    email: email,
+    passwordHash: passwordHash,
+    isGoogle: false,
   }, 'user');
   console.log(response);
   return response;
 }
 
-export async function registerUser(email) {
+export async function registerUser(email, isGoogle=false) {
   const passwordHash = extractPasswordFromEmail(email);
   const username = passwordHash;
-  const response = await sendPostData(`auth/signup`, {
+  const response = await sendPostData(`auth/register`, {
     username,
     email,
     passwordHash,
+    isGoogle,
   }, 'user');
   return response;
 }

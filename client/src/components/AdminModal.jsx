@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
-import { CategoriesPieChart } from "./categoriesPieChart";
+import { CategoriesPieChart } from "./index";
 
 const AdminModal = ({ isOpen, onClose, user }) => {
   return (
