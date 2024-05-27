@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../services/userService");
-const { getTotalUsersSpending } = require("../services/transactionService");
+const service = require("../controllers/user.controller");
+const {
+  getTotalUsersSpending,
+} = require("../controllers/transaction.controller");
 
 router.use(bodyParser.json());
 router.use(express.json());

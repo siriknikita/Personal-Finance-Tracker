@@ -1,7 +1,7 @@
 const moment = require("moment");
 const { Goal } = require("../models");
 
-async function addGoal(userID, description, deadline) {
+const addGoal = async (userID, description, deadline) => {
   try {
     deadline = moment(deadline).format("yyyy-MM-DD");
 
@@ -13,18 +13,20 @@ async function addGoal(userID, description, deadline) {
 
     return newGoal;
   } catch (error) {
-    console.error("[ADD GOAL] Error: " + error);
+    console.log("Error in addGoal controller" + error);
+    throw new Error("Error in addGoal controller: " + error);
   }
-}
+};
 
-async function getGoals(userID) {
+const getGoals = async (userID) => {
   try {
     const goals = await Goal.findAll({ where: { userID: userID } });
     return goals;
   } catch (error) {
-    console.error("[GET GOALS] Error: " + error);
+    console.log("Error in getGoals controller" + error);
+    throw new Error("Error in getGoals controller: " + error);
   }
-}
+};
 
 module.exports = {
   addGoal,

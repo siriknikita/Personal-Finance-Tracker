@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../services/goalService");
+const service = require("../controllers/goal.controller");
 
 router.use(bodyParser.json());
 router.use(express.json());

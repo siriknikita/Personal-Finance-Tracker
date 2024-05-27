@@ -1,6 +1,6 @@
 const { Transaction, Category, User } = require("../models");
 
-async function getTransactionCategoriesIDByUserID(userID) {
+const getTransactionCategoriesIDByUserID = async (userID) => {
   try {
     const transactions = await Transaction.findAll({
       where: { userID },
@@ -9,11 +9,16 @@ async function getTransactionCategoriesIDByUserID(userID) {
 
     return transactions.map((transaction) => transaction.categoryID);
   } catch (error) {
-    console.error("[GET TRANSACTION CATEGORIES ID BY USER ID] Error: " + error);
+    console.log(
+      "Erorr in getTransactionCategoriesIDByUserID controller:" + error
+    );
+    throw new Error(
+      "Error in getTransactionCategoriesIDByUserID: controller: " + error
+    );
   }
-}
+};
 
-async function getCategoryNameByID(categoryID) {
+const getCategoryNameByID = async (categoryID) => {
   try {
     const category = await Category.findByPk(categoryID, {
       attributes: ["name"],
@@ -21,32 +26,34 @@ async function getCategoryNameByID(categoryID) {
 
     return category ? category.name : null;
   } catch (error) {
-    console.error("[GET CATEGORY NAME BY ID] Error: " + error);
+    console.log("Error in getCategoryNameByID controller: " + error);
+    throw new Error("Error in getCategoryNameByID controller: " + error);
   }
-}
+};
 
-async function getTransactionCategoriesByUserID(userID) {
+const getTransactionCategoriesByUserID = async (userID) => {
   const categoriesID = await getTransactionCategoriesIDByUserID(userID);
   const categoriesList = await Promise.all(
     categoriesID.map(getCategoryNameByID)
   );
   return categoriesList;
-}
+};
 
-async function getCategoriesList() {
+const getCategoriesList = async () => {
   try {
     return await Category.findAll();
   } catch (error) {
-    console.error("[GET CATEGORIES LIST] Error: " + error);
+    console.log("Error in getCategoriesList controller: " + error);
+    throw new Error("Error in getCategoriesList controller: " + error);
   }
-}
+};
 
-async function getUniqueCategoriesList(userID) {
+const getUniqueCategoriesList = async (userID) => {
   const categories = await getTransactionCategoriesByUserID(userID);
   return Array.from(new Set(categories));
-}
+};
 
-async function getTransactionMoneyByUserID(userID) {
+const getTransactionMoneyByUserID = async (userID) => {
   try {
     const transactions = await Transaction.findAll({
       where: { userID: userID },
@@ -55,11 +62,12 @@ async function getTransactionMoneyByUserID(userID) {
 
     return transactions.map((transaction) => transaction.dataValues.amount);
   } catch (error) {
-    console.error("[GET TRANSACTION MONEY BY USER ID] Error: " + error);
+    console.log("Error in getTransactionMoneyByUserID controller: " + error);
+    throw new Error("Error in getTransactionMoneyByUserID controller: " + error);
   }
-}
+};
 
-async function getMoneySpentOnEachCategory(userID) {
+const getMoneySpentOnEachCategory = async (userID) => {
   const categories = await getTransactionCategoriesByUserID(userID);
   const moneySpent = await getTransactionMoneyByUserID(userID);
   const data = categories.reduce((acc, category, index) => {
@@ -68,9 +76,9 @@ async function getMoneySpentOnEachCategory(userID) {
   }, {});
 
   return data;
-}
+};
 
-async function addTransaction(userID, amount, categoryID) {
+const addTransaction = async (userID, amount, categoryID) => {
   try {
     const transaction = await Transaction.create({
       userID,
@@ -79,19 +87,21 @@ async function addTransaction(userID, amount, categoryID) {
     });
     return transaction ? true : false;
   } catch (error) {
-    console.error("[ADD TRANSACTION] Error: " + error);
+    console.log("Error in addTransaction controller: " + error);
+    throw new Error("Error in addTransaction controller: " + error);
   }
-}
+};
 
-async function getTransactionsByID(userID) {
+const getTransactionsByID = async (userID) => {
   try {
     return await Transaction.findAll({ where: { userID } });
   } catch (error) {
-    console.error("[GET TRANSACTIONS BY ID] Error: " + error);
+    console.log("Error in getTransactionsByID controller: " + error);
+    throw new Error("Error in getTransactionsByID controller: " + error);
   }
-}
+};
 
-async function getTotalSpent(userID) {
+const getTotalSpent = async (userID) => {
   try {
     const user = await User.findByPk(userID, {
       attributes: ["totalSpent"],
@@ -99,11 +109,12 @@ async function getTotalSpent(userID) {
 
     return user ? user.totalSpent : 0;
   } catch (error) {
-    console.error("[GET TOTAL SPENT] Error: " + error);
+    console.log("Error in getTotalSpent controller: " + error);
+    throw new Error("Error in getTotalSpent controller: " + error);
   }
-}
+};
 
-async function updateTotalMoneySpentByUserID(userID, amount) {
+const updateTotalMoneySpentByUserID = async (userID, amount) => {
   try {
     const user = await User.findByPk(userID);
     if (!user) {
@@ -115,11 +126,14 @@ async function updateTotalMoneySpentByUserID(userID, amount) {
 
     return true;
   } catch (error) {
-    console.error("[UPDATE TOTAL SPENT BY USER ID] Error: " + error);
+    console.log("Error in updateTotalMoneySpentByUserID controller: " + error);
+    throw new Error(
+      "Error in updateTotalMoneySpentByUserID controller: " + error
+    );
   }
-}
+};
 
-async function getMoneySpentByCategoryID(categoryID) {
+const getMoneySpentByCategoryID = async (categoryID) => {
   try {
     const transactions = await Transaction.findAll({
       where: { categoryID: categoryID },
@@ -128,11 +142,12 @@ async function getMoneySpentByCategoryID(categoryID) {
 
     return transactions.map((transaction) => transaction.dataValues.amount);
   } catch (error) {
-    console.error("[GET MONEY SPENT BY CATEGORY ID] Error: " + error);
+    console.log("Error in getMoneySpentByCategoryID controller: " + error);
+    throw new Error("Error in getMoneySpentByCategoryID controller: " + error);
   }
-}
+};
 
-async function getTop5FrequentCategories() {
+const getTop5FrequentCategories = async () => {
   try {
     const topCategories = await Transaction.findAll({
       attributes: [
@@ -149,11 +164,12 @@ async function getTop5FrequentCategories() {
       count: category.get("count"),
     }));
   } catch (error) {
-    console.error("[GET TOP 5 FREQUENT SPENDINGS CATEGORIES] Error: " + error);
+    console.log("Error in getTop5FrequentCategories controller: " + error);
+    throw new Error("Error in getTop5FrequentCategories controller: " + error);
   }
-}
+};
 
-async function getTop5CategoriesFrequencies() {
+const getTop5CategoriesFrequencies = async () => {
   try {
     const topCategories = await getTop5FrequentCategories();
     const top5CategoriesFrequencies = {};
@@ -165,11 +181,14 @@ async function getTop5CategoriesFrequencies() {
 
     return top5CategoriesFrequencies;
   } catch (error) {
-    console.error("[GET TOP 5 CATEGORIES FREQUENCIES] Error: " + error);
+    console.log("Error in getTop5CategoriesFrequencies controller: " + error);
+    throw new Error(
+      "Error in getTop5CategoriesFrequencies controller: " + error
+    );
   }
-}
+};
 
-async function getTop5CategoriesNames() {
+const getTop5CategoriesNames = async () => {
   try {
     const topCategories = await getTop5FrequentCategories();
     const top5CategoriesNames = [];
@@ -181,11 +200,12 @@ async function getTop5CategoriesNames() {
 
     return top5CategoriesNames;
   } catch (error) {
-    console.error("[GET TOP 5 CATEGORIES NAMES] Error: " + error);
+    console.log("Error in getTop5CategoriesNames controller: " + error);
+    throw new Error("Error in getTop5CategoriesNames controller: " + error);
   }
-}
+};
 
-async function getTotalUsersSpending() {
+const getTotalUsersSpending = async () => {
   try {
     const categoriesData = await getCategoriesList();
     const categories = categoriesData.map((category) => category.dataValues);
@@ -201,22 +221,26 @@ async function getTotalUsersSpending() {
 
     return totalUsersSpending;
   } catch (error) {
-    console.error("[GET TOTAL USERS SPENDING] Error: " + error);
+    console.log("Error in getTotalUsersSpending controller: " + error);
+    throw new Error("Error in getTotalUsersSpending controller: " + error);
   }
-}
+};
 
 module.exports = {
+  getTransactionCategoriesIDByUserID,
   getCategoryNameByID,
   getTransactionCategoriesByUserID,
+  getCategoriesList,
+  getUniqueCategoriesList,
   getTransactionMoneyByUserID,
   getMoneySpentOnEachCategory,
   addTransaction,
   getTransactionsByID,
   getTotalSpent,
-  getUniqueCategoriesList,
-  getTop5FrequentCategories,
-  getTop5CategoriesNames,
-  getTop5CategoriesFrequencies,
   updateTotalMoneySpentByUserID,
+  getMoneySpentByCategoryID,
+  getTop5FrequentCategories,
+  getTop5CategoriesFrequencies,
+  getTop5CategoriesNames,
   getTotalUsersSpending,
 };

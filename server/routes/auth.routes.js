@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { sendGreetingEmail } = require("../services/sendEmail");
-const { createUser, loginUser } = require("../services/userService");
+const { sendGreetingEmail } = require("../controllers/sendEmail");
+const { createUser, loginUser } = require("../controllers/user.controller");
 const { User } = require("../models");
 
 router.use(bodyParser.json());

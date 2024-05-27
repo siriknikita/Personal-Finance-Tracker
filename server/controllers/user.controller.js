@@ -3,33 +3,36 @@ const moment = require("moment");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 
-async function getUser(email) {
+const getUser = async (email) => {
   try {
     const isAdmin = email === process.env.ADMIN_EMAIL;
     return await User.findOne({ where: { email: email, isAdmin: isAdmin } });
   } catch (error) {
-    console.error("[GET USER] Error: " + error);
+    console.log("Error in getUser controller" + error);
+    throw new Error("Error in getUser controller: " + error);
   }
 }
 
-async function getUserByID(userID) {
+const getUserByID = async (userID) => {
   try {
     return await User.findOne({ where: { userID: userID } });
   } catch (error) {
-    console.error("[GET USER BY ID] Error: " + error);
+    console.log("Error in getUserByID controller" + error);
+    throw new Error("Error in getUserByID controller: " + error);
   }
 }
 
-async function getUsers() {
+const getUsers = async () => {
   try {
     return await User.findAll();
   } catch (error) {
-    console.error("[GET USERS] Error: " + error);
+    console.log("Error in getUsers controller" + error);
+    throw new Error("Error in getUsers controller: " + error);
   }
 }
 
 
-async function createUser(username, email, password, isGoogle = false) {
+const createUser = async (username, email, password, isGoogle = false) => {
   try {
     const existingUser = await getUser(email);
     if (existingUser) {
@@ -49,11 +52,12 @@ async function createUser(username, email, password, isGoogle = false) {
 
     return newUser.dataValues;
   } catch (error) {
-    console.error("[CREATE USER] Error: " + error);
+    console.log("Error in createUser controller" + error);
+    throw new Error("Error in createUser controller: " + error);
   }
 }
 
-async function loginUser(email, password, isGoogle = false) {
+const loginUser = async (email, password, isGoogle = false) => {
   try {
     const userData = await getUser(email);
     // If the user is logging in with Google, we don't need to check the password
@@ -70,12 +74,13 @@ async function loginUser(email, password, isGoogle = false) {
     await userData.save();
     return userData.dataValues;
   } catch (error) {
-    console.error("[LOGIN USER] Error: " + error);
+    console.log("Error in loginUser controller" + error);
+    throw new Error("Error in loginUser controller: " + error);
   }
 }
 
 
-async function updateTotalSpent(userID, amount) {
+const updateTotalSpent = async (userID, amount) => {
   try {
     const user = await getUserByID(userID);
     if (user) {
@@ -86,11 +91,12 @@ async function updateTotalSpent(userID, amount) {
       return false;
     }
   } catch (error) {
-    console.error("[UPDATE TOTAL SPENT] Error: " + error);
+    console.log("Error in updateTotalSpent controller" + error);
+    throw new Error("Error in updateTotalSpent controller: " + error);
   }
 }
 
-async function updateEmail(currentEmail, newEmail) {
+const updateEmail = async (currentEmail, newEmail) => {
   try {
     const user = await getUser(currentEmail);
     if (user) {
@@ -101,11 +107,12 @@ async function updateEmail(currentEmail, newEmail) {
       return false;
     }
   } catch (error) {
-    console.error("[UPDATE EMAIL] Error: " + error);
+    console.log("Error in updateEmail controller" + error);
+    throw new Error("Error in updateEmail controller: " + error);
   }
 }
 
-async function updatePassword(email, newPassword) {
+const updatePassword = async (email, newPassword) => {
   try {
     const user = await getUser(email);
     if (user) {
@@ -116,11 +123,12 @@ async function updatePassword(email, newPassword) {
       return false;
     }
   } catch (error) {
-    console.error("[UPDATE PASSWORD] Error: " + error);
+    console.log("Error in updatePassword controller" + error);
+    throw new Error("Error in updatePassword controller: " + error);
   }
 }
 
-async function updateUsername(email, currentUsername, newUsername) {
+const updateUsername = async (email, currentUsername, newUsername) => {
   try {
     const user = await getUser(email);
     if (user && user.username === currentUsername) {
@@ -131,12 +139,14 @@ async function updateUsername(email, currentUsername, newUsername) {
       return false;
     }
   } catch (error) {
-    console.error("[UPDATE USERNAME] Error: " + error);
+    console.log("Error in updateUsername controller" + error);
+    throw new Error("Error in updateUsername controller: " + error);
   }
 }
 
 module.exports = {
   getUser,
+  getUserByID,
   getUsers,
   createUser,
   loginUser,
