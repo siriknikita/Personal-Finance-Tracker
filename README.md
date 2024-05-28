@@ -277,7 +277,7 @@ This version should provide a more polished and professional feel to your docume
 ## ANTILAB 2
 
 -   Hulak Mykhailo
--   [Project Link](https://hulak-university-local-news.vercel.app/)
+-   [Pull request](https://github.com/midjiro/hulak.university.local-news/pull/2)
 
 -   Oleh Tysovskyi
--   [Project Link](https://tysovskyi-university-monobank-client.vercel.app/)
+-   [Pull request](https://github.com/OlehTysovskyi/Tysovskyi.University.Monobank/pull/2)
