@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../controllers/user.controller");
+const { userController } = require("../controllers");
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -29,7 +29,7 @@ router.get("/get/:email", async (req, res) => {
   try {
     const email = req.params.email;
 
-    const user = await service.getUser(email);
+    const user = await userController.getUser(email);
     res.json({ user: user });
   } catch (error) {
     console.error(`Error getting a user: ${error}`);
@@ -64,7 +64,7 @@ router.post("/update/email", async (req, res) => {
   try {
     const { email, newEmail } = req.body;
 
-    const response = await service.updateEmail(email, newEmail);
+    const response = await userController.updateEmail(email, newEmail);
     if (response) {
       res.json({ message: "Email updated successfully" });
     }
@@ -101,7 +101,10 @@ router.post("/update/password", async (req, res) => {
   try {
     const { email, newPasswordHash } = req.body;
 
-    const response = await service.updatePassword(email, newPasswordHash);
+    const response = await userController.updatePassword(
+      email,
+      newPasswordHash
+    );
     if (response) {
       res.json({ message: "Password updated successfully" });
     }
@@ -140,7 +143,7 @@ router.post("/update/username", async (req, res) => {
   try {
     const { email, currentUsername, newUsername } = req.body;
 
-    const response = await service.updateUsername(
+    const response = await userController.updateUsername(
       email,
       currentUsername,
       newUsername

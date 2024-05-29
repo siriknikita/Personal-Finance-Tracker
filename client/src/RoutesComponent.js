@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { UserContext } from "./App";
+import { UserContext } from "./contexts";
 import { Table, TransactionsTable } from "./components";
 import { AdminDashboard, Dashboard, Login, Profile, Signup } from "./scenes";
 import { GoalForm, ProfileForm, TransactionForm } from "./scenes/forms";

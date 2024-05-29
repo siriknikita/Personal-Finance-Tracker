@@ -15,21 +15,28 @@ appInsights
 const express = require("express");
 const cors = require("cors");
 const { sequelize } = require("./models");
-
+const swaggerUI = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
+const cookieParser = require("cookie-parser");
 const app = express();
+const multer = require("multer");
+const upload = multer();
 
-app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  // res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://personal-finance-tracker-pft-client.azurewebsites.net",
-      "https://personal-finance-tracker-server.azurewebsites.net/",
-    ],
+    origin: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
 );
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   try {
@@ -43,19 +50,21 @@ app.get("/", (req, res) => {
   }
 });
 
-const authRoutes = require("./routes/auth");
-const goalsRoutes = require("./routes/goals");
-const userRoutes = require("./routes/user");
-const transactionsRoutes = require("./routes/transactions");
-const adminRoutes = require("./routes/admin");
-const blobRoutes = require("./routes/blobStorage");
+const authRoutes = require("./routes/auth.route");
+const goalsRoutes = require("./routes/goals.route");
+const userRoutes = require("./routes/user.route");
+const transactionsRoutes = require("./routes/transactions.route");
+const adminRoutes = require("./routes/admin.route");
+const blobRoutes = require("./routes/blobStorage.route");
+const { cookieJWTAuth } = require("./middleware/cookieJWTAuth");
 
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
-app.use("/api/goals", goalsRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/transactions", transactionsRoutes);
+app.use("/api/goals", cookieJWTAuth, goalsRoutes);
+app.use("/api/user", cookieJWTAuth, userRoutes);
+app.use("/api/transactions", cookieJWTAuth, transactionsRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/blob", blobRoutes);
+app.use("/api/blob", cookieJWTAuth, blobRoutes);
 
 const PORT = process.env.PORT || 8080;
 

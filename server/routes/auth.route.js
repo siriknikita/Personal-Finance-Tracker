@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { sendGreetingEmail } = require("../controllers/sendEmail");
-const { createUser, loginUser } = require("../controllers/user.controller");
+const { sendEmail, userController } = require("../controllers");
 const { User } = require("../models");
 
 router.use(bodyParser.json());
@@ -38,16 +37,15 @@ router.use(express.json());
  */
 router.post("/register", async (req, res) => {
   try {
-    console.log(req.body);
     const { username, email, passwordHash: password, isGoogle } = req.body;
 
-    const newUser = await createUser(username, email, password);
+    const newUser = await userController.createUser(username, email, password);
     if (newUser === "User already exists") {
       return res.status(400).json({ message: "User already exists" });
     }
 
     if (isGoogle) {
-      await sendGreetingEmail(newUser.email);
+      await sendEmail.sendGreetingEmail(newUser.email);
     }
 
     res
@@ -89,7 +87,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, isGoogle, passwordHash: password } = req.body;
-    const user = await loginUser(email, password, isGoogle);
+    const user = await userController.loginUser(email, password, isGoogle);
 
     if (!user && !isGoogle) {
       return res.status(400).json({ message: "Invalid email or password" });

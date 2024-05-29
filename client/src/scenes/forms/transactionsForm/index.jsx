@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { UserContext } from "../../../App";
+import { UserContext } from "../../../contexts";
 import { Header } from "../../../components";
 import { sendPostData } from "../../../services/dataProcessing";
 

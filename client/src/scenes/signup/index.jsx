@@ -1,18 +1,31 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { React, useContext, useState } from "react";
+import { React, useContext} from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { UserContext } from "../../App";
+import { UserContext } from "../../contexts";
 import styles from "./styles.module.css";
-import { registerUser } from "../../services/auth";
+import { googleRegisterUser, registerUser } from "../../services/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+
+const schema = z.object({
+  username: z.string().min(3),
+  email: z.string().email(),
+  passwordHash: z.string().min(8),
+});
 
 function Signup() {
   const { setUser, setIsAuthorized } = useContext(UserContext);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [passwordHash, setPasswordHash] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
   const navigate = useNavigate();
 
   const googleRegister = useGoogleLogin({
@@ -27,28 +40,27 @@ function Signup() {
           }
         );
         const data = res.data;
-        const user = await registerUser(data.email, true);
+        const user = await googleRegisterUser(data.email);
         setUser(user);
         setIsAuthorized(true);
         navigate("/dashboard");
         toast.success("Registered via Google successfully!");
       } catch (err) {
-        console.log(err);
+        console.error("Error in google register:", err);
+        throw new Error("Error in google register: ", err);
       }
     },
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const response = await registerUser(email);
-      if (response.ok) {
-        setUser(response.user);
+      const { username, email, passwordHash } = data;
+      const user = await registerUser(username, email, passwordHash);
+      if (user) {
+        setUser(user);
         setIsAuthorized(true);
         navigate("/dashboard");
         toast.success("Logged in successfully!");
-      } else {
-        toast.error(response.error);
       }
     } catch (error) {
       toast.error("Something went wrong! Please try again.");
@@ -73,40 +85,65 @@ function Signup() {
           </div>
           <div className={styles.right}>
             <h2 className={styles.from_heading}>Create Account</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <input
+                {...register("username", {
+                  required: "Username is required",
+                })}
                 type="text"
                 className={styles.input}
                 placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 required
               />
+              {!errors.username && <br />}
+              {errors.username && (
+                <div className={styles.error_message}>
+                  {errors.username.message}
+                </div>
+              )}
               <input
+                {...register("email", {
+                  required: "Email is required",
+                })
+                }
                 type="email"
                 className={styles.input}
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              {!errors.email && <br />}
+              {errors.email && (
+                <div className={styles.error_message}>
+                  {errors.email.message}
+                </div>
+              )}
               <input
+                {...register("passwordHash", {
+                  required: "Password is required",
+                })}
                 type="password"
                 className={styles.input}
                 placeholder="Password"
-                value={passwordHash}
-                onChange={(e) => setPasswordHash(e.target.value)}
                 required
               />
-              <br />
-              <button type="submit" className={styles.btn}>
-                Sign Up
+              {!errors.passwordHash && <br />}
+              {errors.passwordHash && (
+                <div className={styles.error_message}>
+                  {errors.passwordHash.message}
+                </div>
+              )}
+              <button disabled={isSubmitting} className={styles.btn}>
+                {isSubmitting ? "Signing up..." : "Sign up"}
               </button>
             </form>
             <p className={styles.text}>or</p>
-            <button className={styles.google_btn} onClick={googleRegister}>
+            <button
+              disabled={isSubmitting}
+              className={styles.google_btn}
+              onClick={googleRegister}
+            >
               <img src="./images/google.png" alt="google icon" />
-              <span>Sing up with Google</span>
+              Sing up with Google
             </button>
             <p className={styles.text}>
               Already Have Account ? <Link to="/login">Log In</Link>

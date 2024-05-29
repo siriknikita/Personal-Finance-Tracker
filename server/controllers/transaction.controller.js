@@ -1,4 +1,5 @@
-const { Transaction, Category, User } = require("../models");
+const { Transaction, Category } = require("../models");
+const { budgetController, categoryController } = require("../controllers");
 
 const getTransactionCategoriesIDByUserID = async (userID) => {
   try {
@@ -39,24 +40,10 @@ const getTransactionCategoriesByUserID = async (userID) => {
   return categoriesList;
 };
 
-const getCategoriesList = async () => {
-  try {
-    return await Category.findAll();
-  } catch (error) {
-    console.log("Error in getCategoriesList controller: " + error);
-    throw new Error("Error in getCategoriesList controller: " + error);
-  }
-};
-
-const getUniqueCategoriesList = async (userID) => {
-  const categories = await getTransactionCategoriesByUserID(userID);
-  return Array.from(new Set(categories));
-};
-
 const getTransactionMoneyByUserID = async (userID) => {
   try {
     const transactions = await Transaction.findAll({
-      where: { userID: userID },
+      where: { userID },
       attributes: ["amount"],
     });
 
@@ -103,11 +90,7 @@ const getTransactionsByID = async (userID) => {
 
 const getTotalSpent = async (userID) => {
   try {
-    const user = await User.findByPk(userID, {
-      attributes: ["totalSpent"],
-    });
-
-    return user ? user.totalSpent : 0;
+    return await budgetController.getTotalSpentByUserID(userID);
   } catch (error) {
     console.log("Error in getTotalSpent controller: " + error);
     throw new Error("Error in getTotalSpent controller: " + error);
@@ -116,13 +99,10 @@ const getTotalSpent = async (userID) => {
 
 const updateTotalMoneySpentByUserID = async (userID, amount) => {
   try {
-    const user = await User.findByPk(userID);
-    if (!user) {
+    const budget = await budgetController.updateBudget(userID, amount);
+    if (!budget) {
       return false;
     }
-
-    user.totalSpent += parseFloat(amount);
-    await user.save();
 
     return true;
   } catch (error) {
@@ -207,7 +187,7 @@ const getTop5CategoriesNames = async () => {
 
 const getTotalUsersSpending = async () => {
   try {
-    const categoriesData = await getCategoriesList();
+    const categoriesData = await categoryController.getCategoriesList();
     const categories = categoriesData.map((category) => category.dataValues);
     const totalUsersSpending = {};
 
@@ -230,8 +210,6 @@ module.exports = {
   getTransactionCategoriesIDByUserID,
   getCategoryNameByID,
   getTransactionCategoriesByUserID,
-  getCategoriesList,
-  getUniqueCategoriesList,
   getTransactionMoneyByUserID,
   getMoneySpentOnEachCategory,
   addTransaction,

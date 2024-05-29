@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../controllers/transaction.controller");
-const userService = require("../controllers/user.controller");
+const { transactionController, userController } = require("../controllers");
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -30,7 +29,9 @@ router.get("/get/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const transactions = await service.getTransactionsByID(userID);
+    const transactions = await transactionController.getTransactionsByID(
+      userID
+    );
     res.status(200).json({ transactions: transactions });
   } catch (error) {
     console.error(`Error getting transactions: ${error}`);
@@ -61,7 +62,9 @@ router.get("/get/moneySpent/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const moneySpent = await service.getTransactionMoneyByUserID(userID);
+    const moneySpent = await transactionController.getTransactionMoneyByUserID(
+      userID
+    );
     res.status(200).json({ moneySpent: moneySpent });
   } catch (error) {
     console.error(`Error getting total spent: ${error}`);
@@ -92,9 +95,8 @@ router.get("/get/moneySpent/categories/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const moneySpentOnEachCategory = await service.getMoneySpentOnEachCategory(
-      userID
-    );
+    const moneySpentOnEachCategory =
+      await transactionController.getMoneySpentOnEachCategory(userID);
     res.status(200).json({ data: moneySpentOnEachCategory });
   } catch (error) {
     console.error(`Error getting money spent on each category: ${error}`);
@@ -116,7 +118,8 @@ router.get("/get/moneySpent/categories/:userID", async (req, res) => {
  */
 router.get("/get/spendings/top5", async (req, res) => {
   try {
-    const top5SpendingsFreq = await service.getTop5CategoriesFrequencies();
+    const top5SpendingsFreq =
+      await transactionController.getTop5CategoriesFrequencies();
     res.status(200).json({
       top5Spendings: top5SpendingsFreq,
     });
@@ -149,7 +152,8 @@ router.get("/get/categories/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const categories = await service.getTransactionCategoriesByUserID(userID);
+    const categories =
+      await transactionController.getTransactionCategoriesByUserID(userID);
     res.status(200).json({ categories: categories });
   } catch (error) {
     console.error(`Error getting transaction categories: ${error}`);
@@ -186,8 +190,12 @@ router.post("/add", async (req, res) => {
   try {
     const { userID, amount, categoryID } = req.body;
 
-    const response = await service.addTransaction(userID, amount, categoryID);
-    const updatedTotalSpent = await userService.updateTotalSpent(
+    const response = await transactionController.addTransaction(
+      userID,
+      amount,
+      categoryID
+    );
+    const updatedTotalSpent = await userController.updateTotalSpent(
       userID,
       amount
     );

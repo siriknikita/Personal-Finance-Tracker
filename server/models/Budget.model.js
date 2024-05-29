@@ -1,12 +1,14 @@
-const { DataTypes } = require('sequelize');
-const User = require('./User');
-const sequelize = require('../database');
+const { DataTypes } = require("sequelize");
+const User = require("./User");
+const sequelize = require("../database");
 
-const Budget = sequelize.define('Budget', {
+const Budget = sequelize.define(
+  "Budget",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
     userID: {
       type: DataTypes.INTEGER,
@@ -26,8 +28,15 @@ const Budget = sequelize.define('Budget', {
       allowNull: false,
       defaultValue: 0,
     },
-}, {
-    timestamps: false
-});
+    monthlyLimit: {
+      type: DataTypes.DECIMAL(18, 0),
+      allowNull: false,
+      defaultValue: 1000,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
 
 module.exports = Budget;

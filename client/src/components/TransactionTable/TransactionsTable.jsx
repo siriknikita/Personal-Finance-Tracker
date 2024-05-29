@@ -6,7 +6,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../App";
+import { UserContext } from "../../contexts";
 import { fetchData } from "../../services/dataProcessing";
 import styles from "../styles.module.css";
 
@@ -75,7 +75,6 @@ function TransactionsTable() {
           <tbody>
             {transactions?.map((transaction, index) => (
               <tr key={transaction?.id}>
-                {console.log(categories)}
                 <td>{categories[index]}</td>
                 <td>{transaction?.amount}</td>
               </tr>

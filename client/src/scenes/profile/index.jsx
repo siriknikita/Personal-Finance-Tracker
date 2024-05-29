@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserContext } from "../../App";
+import { UserContext } from "../../contexts";
 import { Header } from "../../components";
 
 function Profile() {

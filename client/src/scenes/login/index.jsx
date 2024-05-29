@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { UserContext } from "../../App";
+import { UserContext } from "../../contexts";
 import { googleLoginUser, loginUser } from "../../services/auth";
 import styles from "./styles.module.css";
 
@@ -45,7 +45,7 @@ function Login() {
         navigate("/dashboard");
         toast.success("Logged in via Google successfully!");
       } catch (err) {
-        console.log(`[LOGIN] Error logging in via Google: ${err}`);
+        console.error(`[LOGIN] Error logging in via Google: ${err}`);
         toast.error("Error logging in via Google!");
       }
     },
@@ -97,7 +97,11 @@ function Login() {
                 required
               />
               {!errors.email && <br />}
-              {errors.email && <div className={styles.error_message}>{errors.email.message}</div>}
+              {errors.email && (
+                <div className={styles.error_message}>
+                  {errors.email.message}
+                </div>
+              )}
               <input
                 {...register("passwordHash", {
                   required: "Password is required",
@@ -108,13 +112,21 @@ function Login() {
                 required
               />
               {!errors.passwordHash && <br />}
-              {errors.passwordHash && <div className={styles.error_message}>{errors.passwordHash.message}</div>}
+              {errors.passwordHash && (
+                <div className={styles.error_message}>
+                  {errors.passwordHash.message}
+                </div>
+              )}
               <button disabled={isSubmitting} className={styles.btn}>
                 {isSubmitting ? "Logging in..." : "Log in"}
               </button>
             </form>
             <p className={styles.text}>or</p>
-            <button disabled={isSubmitting} className={styles.google_btn} onClick={googleLogin}>
+            <button
+              disabled={isSubmitting}
+              className={styles.google_btn}
+              onClick={googleLogin}
+            >
               <img src="./images/google.png" alt="google icon" />
               Sing in with Google
             </button>

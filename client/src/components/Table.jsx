@@ -25,7 +25,6 @@ export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
     async function fetchTableData() {
       const fetchedTableData = await fetchData(fetchUrl, dataKey);
       setTableData(fetchedTableData);
-      console.log(fetchedTableData);
     }
     fetchTableData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

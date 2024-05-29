@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../controllers/user.controller");
-const {
-  getTotalUsersSpending,
-} = require("../controllers/transaction.controller");
+const { userController, transactionController } = require("../controllers");
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -23,7 +20,7 @@ router.use(express.json());
  */
 router.get("/get/users", async (req, res) => {
   try {
-    const users = await service.getUsers();
+    const users = await userController.getUsers();
     res.json({ users: users });
   } catch (error) {
     console.error(`Error getting users: ${error}`);
@@ -45,7 +42,7 @@ router.get("/get/users", async (req, res) => {
  */
 router.get("/get/usersSpending", async (req, res) => {
   try {
-    const usersSpending = await getTotalUsersSpending();
+    const usersSpending = await transactionController.getTotalUsersSpending();
     res.json({ usersSpending: usersSpending });
   } catch (error) {
     console.error(`Error getting users spending: ${error}`);

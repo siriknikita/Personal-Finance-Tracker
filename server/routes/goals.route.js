@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const service = require("../controllers/goal.controller");
+const { goalController } = require("../controllers");
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -29,7 +29,7 @@ router.get("/get/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const goals = await service.getGoals(userID);
+    const goals = await goalController.getGoals(userID);
     res.json({ goals: goals });
   } catch (error) {
     console.error(`Error getting goals: ${error}`);
@@ -67,7 +67,11 @@ router.post("/set", async (req, res) => {
   try {
     const { userID, description, deadline } = req.body;
 
-    const response = await service.addGoal(userID, description, deadline );
+    const response = await goalController.addGoal(
+      userID,
+      description,
+      deadline
+    );
     if (response) {
       res.json({ message: "Goal set successfully" });
     }
