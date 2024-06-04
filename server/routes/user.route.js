@@ -27,10 +27,17 @@ router.use(express.json());
  */
 router.get("/get/:email", async (req, res) => {
   try {
-    const email = req.params.email;
+    const { email } = req.params;
+    if (!email) {
+      res.status(400).json({ message: "Email is required" });
+    }
 
     const user = await userController.getUser(email);
-    res.json({ user: user });
+    if (!user) {
+      res.status(400).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user: user });
   } catch (error) {
     console.error(`Error getting a user: ${error}`);
     res.status(500);
@@ -63,11 +70,24 @@ router.get("/get/:email", async (req, res) => {
 router.post("/update/email", async (req, res) => {
   try {
     const { email, newEmail } = req.body;
+    if (!email || !newEmail) {
+      res.status(400).json({ message: "Email and new email are required" });
+    }
+
+    const userData = await userController.getUser(email);
+    const user = userData.dataValues;
+
+    if (user.email !== email) {
+      res.status(400).json({ message: "Email does not match" });
+    }
 
     const response = await userController.updateEmail(email, newEmail);
-    if (response) {
-      res.json({ message: "Email updated successfully" });
+
+    if (!response) {
+      res.status(400).json({ message: "User not found" });
     }
+
+    res.status(200).json({ message: "Email updated successfully" });
   } catch (error) {
     console.error(`Error updating email: ${error}`);
     res.status(500);
@@ -99,15 +119,20 @@ router.post("/update/email", async (req, res) => {
  */
 router.post("/update/password", async (req, res) => {
   try {
-    const { email, newPasswordHash } = req.body;
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      res.status(400).json({ message: "Email and new password are required" });
+    }
 
     const response = await userController.updatePassword(
       email,
-      newPasswordHash
+     newPassword 
     );
-    if (response) {
-      res.json({ message: "Password updated successfully" });
+    if (!response) {
+      res.status(400).json({ message: "User not found" });
     }
+
+    res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.error(`Error updating password: ${error}`);
     res.status(500);
@@ -141,16 +166,22 @@ router.post("/update/password", async (req, res) => {
  */
 router.post("/update/username", async (req, res) => {
   try {
-    const { email, currentUsername, newUsername } = req.body;
+    const { email, newUsername } = req.body;
+    console.log(email, newUsername);
+    if (!email | !newUsername) {
+      res.status(400).json({ message: "Error! Email, current username, and new username are required" });
+    }
 
     const response = await userController.updateUsername(
       email,
-      currentUsername,
       newUsername
     );
-    if (response) {
-      res.json({ message: "Username updated successfully" });
+    console.log(response);
+    if (!response) {
+      res.status(400).json({ message: "Error! User not found" });
     }
+
+    res.status(200).json({ message: "Username updated successfully" });
   } catch (error) {
     console.error(`Error updating username: ${error}`);
     res.status(500);

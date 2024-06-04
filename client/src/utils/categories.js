@@ -1,6 +1,6 @@
-import { fetchData } from "../services/dataProcessing";
+const { fetchData } = require("../services/dataProcessing");
 
-export function formatMoneySpentData(data) {
+function formatMoneySpentData(data) {
   const categories = Object.keys(data);
   const values = Object.values(data);
   const formattedData = categories.map((category, index) => ({
@@ -10,13 +10,19 @@ export function formatMoneySpentData(data) {
   return formattedData;
 }
 
-export async function getMoneySpent(userID) {
+async function getMoneySpent(userID) {
   return await fetchData(
     `transactions/get/moneySpent/categories/${userID}`,
     "data"
   );
 }
 
-export async function getUsersSpending() {
+async function getUsersSpending() {
   return await fetchData("admin/get/usersSpending", "usersSpending");
 }
+
+module.exports = {
+  formatMoneySpentData,
+  getMoneySpent,
+  getUsersSpending,
+};

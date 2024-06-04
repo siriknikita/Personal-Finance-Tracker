@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import {
   flexRender,
   getCoreRowModel,
@@ -7,7 +6,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { fetchData } from "../services/dataProcessing";
 import { formTableColumns } from "../utils/tables";
-import styles from "./styles.module.css";
 
 export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
   const [tableData, setTableData] = useState([]);
@@ -31,8 +29,8 @@ export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
   }, []);
 
   return (
-    <Box className={styles.container + "content"}>
-      <table>
+    <div className="overflow-x-auto">
+      <table className="table table-pin-rows table-sm table-md table-lg">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -48,17 +46,46 @@ export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+         {table.getRowModel().rows.map((row) => (
+           <tr key={row.id} className="hover">
+             {row.getVisibleCells().map((cell) => (
+               <td key={cell.id}>
+                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
+               </td>
+             ))}
+           </tr>
+         ))}
         </tbody>
       </table>
-    </Box>
+    </div>
+    // <div>
+    // <table>
+    //   <thead>
+    //     {table.getHeaderGroups().map((headerGroup) => (
+    //       <tr key={headerGroup.id}>
+    //         {headerGroup.headers.map((header) => (
+    //           <th key={header.id}>
+    //             {flexRender(
+    //               header.column.columnDef.header,
+    //               header.getContext()
+    //             )}
+    //           </th>
+    //         ))}
+    //       </tr>
+    //     ))}
+    //   </thead>
+    //   <tbody>
+    //     {table.getRowModel().rows.map((row) => (
+    //       <tr key={row.id}>
+    //         {row.getVisibleCells().map((cell) => (
+    //           <td key={cell.id}>
+    //             {flexRender(cell.column.columnDef.cell, cell.getContext())}
+    //           </td>
+    //         ))}
+    //       </tr>
+    //     ))}
+    //   </tbody>
+    // </table>
+    // </div>
   );
 }

@@ -65,11 +65,11 @@ router.get("/get/:userID", async (req, res) => {
  */
 router.post("/set", async (req, res) => {
   try {
-    const { userID, description, deadline } = req.body;
+    const { userID, goal, deadline } = req.body;
 
     const response = await goalController.addGoal(
       userID,
-      description,
+      goal,
       deadline
     );
     if (response) {

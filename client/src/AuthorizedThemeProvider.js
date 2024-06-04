@@ -17,9 +17,9 @@ const AuthorizedThemeProvider = ({ children }) => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
+        <div className="flex relative overflow-x-hidden">
           <Sidebar isSidebar={isSidebar} isAuthorized={isAuthorized} />
-          <main className="content">
+          <main className="w-screen h-screen">
             <Topbar setIsSidebar={setIsSidebar} isAuthorized={isAuthorized} />
             {children}
           </main>

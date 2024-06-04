@@ -63,7 +63,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/goals", cookieJWTAuth, goalsRoutes);
 app.use("/api/user", cookieJWTAuth, userRoutes);
 app.use("/api/transactions", cookieJWTAuth, transactionsRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/admin", cookieJWTAuth, adminRoutes);
 app.use("/api/blob", cookieJWTAuth, blobRoutes);
 
 const PORT = process.env.PORT || 8080;
@@ -79,3 +79,5 @@ sequelize
   .catch((err) => {
     console.error("Unable to connect to the database:", err);
   });
+
+module.exports = app;

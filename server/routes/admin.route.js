@@ -24,7 +24,7 @@ router.get("/get/users", async (req, res) => {
     res.json({ users: users });
   } catch (error) {
     console.error(`Error getting users: ${error}`);
-    res.status(500);
+    res.status(500).send("Error getting users");
   }
 });
 
@@ -46,7 +46,7 @@ router.get("/get/usersSpending", async (req, res) => {
     res.json({ usersSpending: usersSpending });
   } catch (error) {
     console.error(`Error getting users spending: ${error}`);
-    res.status(500);
+    res.status(500).send("Error getting users spending");
   }
 });
 

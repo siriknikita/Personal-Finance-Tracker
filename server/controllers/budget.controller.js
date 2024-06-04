@@ -87,8 +87,10 @@ const updateBudget = async (userID, amount) => {
       }
     );
 
-    if (newTotalSpent > budget.monthlyLimit) {
-      sendBudgetLimitExceededEmail(budget.userID);
+    if (newTotalSpent > budget.dataValues.monthlyLimit) {
+      const userController = require("./user.controller");
+      const email = await userController.getEmailByUserID(userID);
+      await sendBudgetLimitExceededEmail(email);
     }
 
     return budget;

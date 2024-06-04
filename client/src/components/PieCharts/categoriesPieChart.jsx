@@ -1,13 +1,13 @@
 import { useTheme } from "@mui/material";
 import React, { useContext, useLayoutEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import { LoadingContet } from "../../scenes/dashboard";
+import { LoadingContext } from "../../scenes/dashboard";
 import { tokens } from "../../theme";
 import { getMoneySpent } from "../../utils/categories";
 
 function CategoriesPieChart({ userID }) {
   const [moneySpentData, setMoneySpentData] = useState({});
-  const { setShowPieChart } = useContext(LoadingContet);
+  const { setShowPieChart } = useContext(LoadingContext);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

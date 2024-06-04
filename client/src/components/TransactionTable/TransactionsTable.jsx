@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import {
   createColumnHelper,
   flexRender,
@@ -8,7 +7,6 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts";
 import { fetchData } from "../../services/dataProcessing";
-import styles from "../styles.module.css";
 
 const columnHelper = createColumnHelper();
 
@@ -55,34 +53,32 @@ function TransactionsTable() {
   });
 
   return (
-    <Box>
-      <Box className={styles.container + "content"}>
-        <table>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {transactions?.map((transaction, index) => (
-              <tr key={transaction?.id}>
-                <td>{categories[index]}</td>
-                <td>{transaction?.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Box>
-    </Box>
+    <div>
+      <table>
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {transactions?.map((transaction, index) => (
+            <tr key={transaction?.id}>
+              <td>{categories[index]}</td>
+              <td>{transaction?.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

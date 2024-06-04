@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const { transactionController, userController } = require("../controllers");
+const { transactionController, budgetController } = require("../controllers");
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -195,10 +195,7 @@ router.post("/add", async (req, res) => {
       amount,
       categoryID
     );
-    const updatedTotalSpent = await userController.updateTotalSpent(
-      userID,
-      amount
-    );
+    const updatedTotalSpent = await budgetController.updateBudget(userID, amount);
     if (response && updatedTotalSpent) {
       res.status(200).json({ message: "Transaction added successfully" });
     }

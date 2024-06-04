@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../../contexts";
-import styles from "./styles.module.css";
 import { googleRegisterUser, registerUser } from "../../services/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -73,31 +72,31 @@ function Signup() {
       <Helmet>
         <title>Sign Up</title>
       </Helmet>
-      <div className={styles.container}>
-        <h1 className={styles.heading}>Sign up Form</h1>
-        <div className={styles.form_container}>
-          <div className={styles.left}>
+      <div>
+        <h1>Sign up Form</h1>
+        <div>
+          <div>
             <img
-              className={styles.img}
+              // className={styles.img}
               src="./images/signup.jpg"
               alt="signup"
             />
           </div>
-          <div className={styles.right}>
-            <h2 className={styles.from_heading}>Create Account</h2>
+          <div>
+            <h2>Create Account</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 {...register("username", {
                   required: "Username is required",
                 })}
                 type="text"
-                className={styles.input}
+                // className={styles.input}
                 placeholder="Username"
                 required
               />
               {!errors.username && <br />}
               {errors.username && (
-                <div className={styles.error_message}>
+                <div>
                   {errors.username.message}
                 </div>
               )}
@@ -107,13 +106,13 @@ function Signup() {
                 })
                 }
                 type="email"
-                className={styles.input}
+                // className={styles.input}
                 placeholder="Email"
                 required
               />
               {!errors.email && <br />}
               {errors.email && (
-                <div className={styles.error_message}>
+                <div>
                   {errors.email.message}
                 </div>
               )}
@@ -122,30 +121,30 @@ function Signup() {
                   required: "Password is required",
                 })}
                 type="password"
-                className={styles.input}
+                // className={styles.input}
                 placeholder="Password"
                 required
               />
               {!errors.passwordHash && <br />}
               {errors.passwordHash && (
-                <div className={styles.error_message}>
+                <div>
                   {errors.passwordHash.message}
                 </div>
               )}
-              <button disabled={isSubmitting} className={styles.btn}>
+              <button disabled={isSubmitting} className="btn border-t-indigo-400">
                 {isSubmitting ? "Signing up..." : "Sign up"}
               </button>
             </form>
-            <p className={styles.text}>or</p>
+            <p>or</p>
             <button
               disabled={isSubmitting}
-              className={styles.google_btn}
+              // className={styles.google_btn}
               onClick={googleRegister}
             >
               <img src="./images/google.png" alt="google icon" />
               Sing up with Google
             </button>
-            <p className={styles.text}>
+            <p>
               Already Have Account ? <Link to="/login">Log In</Link>
             </p>
           </div>
