@@ -2,6 +2,8 @@ import { extractPasswordFromEmail, extractUsernameFromEmail } from "../utils/aut
 import { sendPostData } from "./dataProcessing";
 
 export async function googleLoginUser(email) {
+  console.log("In googleLoginUser");
+  console.log("Email:", email)
   const response = await sendPostData(
     `auth/login`,
     {
@@ -11,6 +13,7 @@ export async function googleLoginUser(email) {
     },
     "user"
   );
+  console.log("Response:", response);
   return response;
 }
 

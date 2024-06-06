@@ -22,7 +22,8 @@ export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
   useEffect(() => {
     async function fetchTableData() {
       const fetchedTableData = await fetchData(fetchUrl, dataKey);
-      setTableData(fetchedTableData);
+      const correctTableData = fetchedTableData.reverse();
+      setTableData(correctTableData);
     }
     fetchTableData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,34 +59,5 @@ export default function Table({ fetchUrl, dataKey, columnsAccessors }) {
         </tbody>
       </table>
     </div>
-    // <div>
-    // <table>
-    //   <thead>
-    //     {table.getHeaderGroups().map((headerGroup) => (
-    //       <tr key={headerGroup.id}>
-    //         {headerGroup.headers.map((header) => (
-    //           <th key={header.id}>
-    //             {flexRender(
-    //               header.column.columnDef.header,
-    //               header.getContext()
-    //             )}
-    //           </th>
-    //         ))}
-    //       </tr>
-    //     ))}
-    //   </thead>
-    //   <tbody>
-    //     {table.getRowModel().rows.map((row) => (
-    //       <tr key={row.id}>
-    //         {row.getVisibleCells().map((cell) => (
-    //           <td key={cell.id}>
-    //             {flexRender(cell.column.columnDef.cell, cell.getContext())}
-    //           </td>
-    //         ))}
-    //       </tr>
-    //     ))}
-    //   </tbody>
-    // </table>
-    // </div>
   );
 }

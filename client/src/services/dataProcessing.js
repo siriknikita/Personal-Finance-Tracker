@@ -1,6 +1,6 @@
 async function fetchData(url, key) {
   const response = await fetch(
-    `/api/${url}`,
+    `${process.env.REACT_APP_API_BASE_URL}/api/${url}`,
     {
       method: "GET",
       headers: {
@@ -18,7 +18,7 @@ async function fetchData(url, key) {
 
 async function sendPostData(url, data, key) {
   const response = await fetch(
-    `/api/${url}`,
+    `${process.env.REACT_APP_API_BASE_URL}/api/${url}`,
     {
       method: "POST",
       body: JSON.stringify(data),

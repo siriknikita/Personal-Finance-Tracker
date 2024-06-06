@@ -12,7 +12,7 @@ const columnHelper = createColumnHelper();
 
 const columns = [
   columnHelper.accessor("categoryID", {
-    header: () => "Category Name",
+    header: () => "Category",
     cell: (info) => <>{info.getValue()}</>,
   }),
   columnHelper.accessor("amount", {
@@ -26,19 +26,21 @@ function TransactionsTable() {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Do not use fetch func in components and not two in order
-
   useEffect(() => {
     async function fetchTransactions() {
       const fetchedTransactionsData = await fetchData(
         `transactions/get/${user.userID}`,
         "transactions"
       );
-      const fetchedCategories = await fetchData(
+      const fetchedCategoriesData = await fetchData(
         `transactions/get/categories/${user.userID}`,
         "categories"
       );
-      setTransactions(fetchedTransactionsData);
+
+      const fetchedTransactions = fetchedTransactionsData.reverse();
+      const fetchedCategories = fetchedCategoriesData.reverse();
+
+      setTransactions(fetchedTransactions);
       setCategories(fetchedCategories);
     }
 
@@ -53,8 +55,8 @@ function TransactionsTable() {
   });
 
   return (
-    <div>
-      <table>
+    <div className="overflow-x-auto">
+      <table className="table table-pin-rows table-sm table-md table-lg">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -71,7 +73,7 @@ function TransactionsTable() {
         </thead>
         <tbody>
           {transactions?.map((transaction, index) => (
-            <tr key={transaction?.id}>
+            <tr key={transaction?.id} className="hover">
               <td>{categories[index]}</td>
               <td>{transaction?.amount}</td>
             </tr>

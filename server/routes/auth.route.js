@@ -87,13 +87,17 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, isGoogle, passwordHash: password } = req.body;
+    console.log("Req.body:", req.body);
     const user = await userController.loginUser(email, password, isGoogle);
+    console.log("User:", user);
 
     if (!user && !isGoogle) {
+      console.log("Invalid email or password");
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1d" });
+    console.log("Token:", token);
 
     const cookieOptions = {
       httpOnly: true,

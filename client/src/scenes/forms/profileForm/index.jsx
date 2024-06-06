@@ -4,19 +4,11 @@ import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { z } from "zod";
 import { Header } from "../../../components";
 import { UserContext } from "../../../contexts";
 import { fetchData } from "../../../services/dataProcessing";
 import { updateUser } from "../../../utils/user";
-
-const schema = z
-  .object({
-    email: z.string().email(),
-    newUsername: z.string().min(3).max(20),
-    newPassword: z.string().optional(),
-    confirmedNewPassword: z.string().optional(),
-  });
+import { profileSchema } from "../schemas";
 
 function ProfileForm() {
   const { user, setUser } = useContext(UserContext);
@@ -26,7 +18,7 @@ function ProfileForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(profileSchema),
   });
 
   const onSubmit = async (data) => {
@@ -61,10 +53,12 @@ function ProfileForm() {
         <title>Profile Form</title>
       </Helmet>
       <Header title="Profile Form" subtitle="Update your profile" />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="p-4">
         <div className="flex flex-col gap-4">
+          {/* Username + Email */}
           <div className="flex flex-row gap-2">
             <div className="grow">
+              {/* Username */}
               <label className="input input-bordered flex items-center gap-2">
                 Username
                 <input
@@ -82,6 +76,7 @@ function ProfileForm() {
               </label>
             </div>
             <div className="grow">
+              {/* Email */}
               <label className="input input-bordered flex items-center gap-2">
                 Email
                 <input
@@ -98,7 +93,9 @@ function ProfileForm() {
               </label>
             </div>
           </div>
+          {/* Password */}
           <div className="flex flex-col gap-4">
+            {/* New password */}
             <label className="input input-bordered flex items-center gap-2">
               New Password
               <input
@@ -111,6 +108,7 @@ function ProfileForm() {
                 disabled={isSubmitting}
               />
             </label>
+            {/* Confirm New Password */}
             <label className="input input-bordered flex items-center gap-2">
               Confirm Password
               <input
@@ -124,14 +122,14 @@ function ProfileForm() {
               />
             </label>
           </div>
+          <button
+            disabled={isSubmitting}
+            className="btn btn-neutral w-32 max-w-36"
+            type="submit"
+          >
+            {isSubmitting ? "Updating profile..." : "Update profile"}
+          </button>
         </div>
-        <button
-          disabled={isSubmitting}
-          className="btn btn-neutral mt-4 w-32 max-w-36"
-          type="submit"
-        >
-          {isSubmitting ? "Updating profile..." : "Update profile"}
-        </button>
       </form>
     </>
   );

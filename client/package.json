@@ -1,7 +1,7 @@
 {
   "name": "personal-finance-tracker",
   "version": "0.1.0",
-  "proxy": "http://localhost:8080",
+  "proxy": "https://personal-finance-tracker-server.azurewebsites.net/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -25,6 +25,7 @@
     "plotly.js-dist": "^2.30.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-cookie-consent": "^9.0.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.51.4",
