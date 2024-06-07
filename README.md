@@ -2,11 +2,11 @@
 
 Welcome to Siryk University’s Personal Finance Tracker, an app designed to help you efficiently track your personal finances and achieve your financial goals.
 
-[Visit the Personal Finance Tracker](https://personal-finance-tracker-pft-client.azurewebsites.net)
+[Visit the Personal Finance Tracker]([https://personal-finance-tracker-pft-client.azurewebsites.net](https://siryk-university-personalfinancetracker-1.onrender.com/signup))
 
 ## Feedback
 
-We value your feedback! Please share any issues or suggestions using our [Feedback Form](https://docs.google.com/document/d/1K5PmItaZCPgPM3I89sUCpidnY_o_bC91UvVepshO4PA/edit?usp=sharing).
+We value your feedback! Please share any issues or suggestions using our Feedback Form on the website.
 
 ## Author
 
