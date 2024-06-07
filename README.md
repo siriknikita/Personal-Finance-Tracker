@@ -122,7 +122,7 @@ This version should provide a more polished and professional feel to your docume
 
 #### ✔️ Implement basic goal setting functionality
 
-#### 🕑 Begin work on notification system
+#### ✔️ Begin work on notification system
 
 #### ✔️ Write unit tests for authentication and basic functionalities
 
@@ -132,7 +132,7 @@ This version should provide a more polished and professional feel to your docume
 
 #### ✔️ Improve data visualization for enhanced user experience
 
-#### 🕑 Complete initial version of notification system
+#### ✔️ Complete initial version of notification system
 
 #### ✔️ Start development of transaction history module️
 
@@ -144,7 +144,7 @@ This version should provide a more polished and professional feel to your docume
 
 #### ✔️ Refine user interface for better usability
 
-#### 🕑 Test and debug notification system
+#### ✔️ Test and debug notification system
 
 #### ✔️ Begin work on profile management features
 
