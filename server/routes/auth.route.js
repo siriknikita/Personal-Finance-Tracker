@@ -45,6 +45,8 @@ router.post("/register", async (req, res) => {
     }
 
     if (isGoogle) {
+      console.log("[REGISTER] Sending greeting email to:", newUser.email);
+      console.log("New user:", newUser);
       await sendEmail.sendGreetingEmail(newUser.email);
     }
 

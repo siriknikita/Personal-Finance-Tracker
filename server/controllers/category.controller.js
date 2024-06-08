@@ -1,5 +1,5 @@
 const { Category } = require("../models");
-const { transactionController } = require("./index");
+const { getTransactionCategoriesByUserID } = require("./transaction.controller");
 
 const getCategoriesList = async () => {
   try {
@@ -12,7 +12,7 @@ const getCategoriesList = async () => {
 
 const getUniqueCategoriesList = async (userID) => {
   const categories =
-    await transactionController.getTransactionCategoriesByUserID(userID);
+    await getTransactionCategoriesByUserID(userID);
   return Array.from(new Set(categories));
 };
 

@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const { uploadPhotoToAzureStorage } = require("../azureStorage");
 const moment = require("moment");
 const multer = require("multer");
-const upload = multer();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.use(bodyParser.json());
 router.use(express.json());
@@ -18,13 +18,14 @@ router.use(express.json());
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               imageName:
+ *               photoData:
  *                 type: string
- *               image:
+ *                 format: binary
+ *               imageName:
  *                 type: string
  *     responses:
  *       200:
@@ -32,20 +33,19 @@ router.use(express.json());
  *       500:
  *         description: Error uploading image
  */
-router.post("/upload/screenshot", upload.single("photoData"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).send('There are no files to upload.');
+router.post(
+  "/upload/screenshot",
+  upload.single("photoData"),
+  async (req, res) => {
+    try {
+      const { base64File, filename } = req.body; 
+      await uploadPhotoToAzureStorage(base64File, filename);
+      res.status(200).json({ message: "Image uploaded successfully" });
+    } catch (error) {
+      console.error(`Error uploading image: ${error}`);
+      res.status(500).send(`Error uploading image: ${error.message}`);
     }
-
-    const photoData = req.file.buffer.toString('base64');
-    const photoName = `screenshot_${moment().format("YYYY-MM-DD_HH-mm-ss")}`; 
-    await uploadPhotoToAzureStorage(photoData, photoName); 
-    res.status(200).send("Image uploaded successfully");
-  } catch (error) {
-    console.error(`Error uploading image: ${error}`);
-    res.status(500);
   }
-});
+);
 
 module.exports = router;

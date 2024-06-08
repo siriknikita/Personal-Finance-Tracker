@@ -3,6 +3,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import TableChartOutlined from "@mui/icons-material/TableChartOutlined";
+import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined';
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
@@ -142,6 +143,13 @@ const Sidebar = ({ isAuthorized }) => {
                       title="Goal Form"
                       to="/goalForm"
                       icon={<PersonOutlinedIcon />}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                    <Item
+                      title="Feedback"
+                      to="/feedback"
+                      icon={<FeedbackOutlinedIcon/>}
                       selected={selected}
                       setSelected={setSelected}
                     />

@@ -4,6 +4,7 @@ import { UserContext } from "./contexts";
 import { Table, TransactionsTable } from "./components";
 import { AdminDashboard, Dashboard, Login, Profile, Signup } from "./scenes";
 import { GoalForm, ProfileForm, TransactionForm } from "./scenes/forms";
+import FeedbackForm from "./scenes/forms/feedbackForm";
 
 const RoutesComponent = () => {
   const { user } = useContext(UserContext);
@@ -15,7 +16,7 @@ const RoutesComponent = () => {
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={isAuthorized ? "/dashboard" : "/login"} />}
+        element={<Navigate to={isAuthorized ? "/dashboard" : "/signup"} />}
       />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
@@ -26,6 +27,7 @@ const RoutesComponent = () => {
           <Route path="/transactionForm" element={<TransactionForm />} />
           <Route path="/profileForm" element={<ProfileForm />} />
           <Route path="/goalForm" element={<GoalForm />} />
+          <Route path="/feedback" element={<FeedbackForm />} />
           <Route
             path="/goals"
             element={

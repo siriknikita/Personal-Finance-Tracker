@@ -163,6 +163,52 @@ router.get("/get/categories/:userID", async (req, res) => {
 
 /**
  * @swagger
+ * /api/transactions/get/expenseData/{userID}:
+ *   get:
+ *     summary: Retrieve expense data for a specific user
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: path
+ *         name: userID
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: Expense data for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       category:
+ *                         type: string
+ *                         description: The category of the expense
+ *                       amount:
+ *                         type: number
+ *                         description: The amount of the expense
+ *       500:
+ *         description: Error getting expense data
+ */
+router.get("/get/expenseData/:userID", async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const data = await transactionController.getExpenseData(userID);
+    res.status(200).json({ data: data });
+  } catch (error) {
+    console.error(`Error getting expense data: ${error}`);
+    res.status(500).json({ error: 'Error getting expense data' });
+  }
+});
+
+/**
+ * @swagger
  * /api/transactions/add:
  *   post:
  *     summary: Add a new transaction

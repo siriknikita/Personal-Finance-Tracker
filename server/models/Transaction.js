@@ -28,6 +28,10 @@ const Transaction = sequelize.define('Transaction', {
     amount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
+    },
+    date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
     }
 }, {
     timestamps: false

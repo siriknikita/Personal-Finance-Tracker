@@ -157,7 +157,7 @@ function Signup() {
                   }`}
                   type="submit"
                 >
-                  {isSubmitting ? "Logging in..." : "Log in"}
+                  {isSubmitting ? "Signing up..." : "Sign Up"}
                 </button>
               </div>
             </form>

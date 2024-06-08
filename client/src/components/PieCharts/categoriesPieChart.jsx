@@ -47,7 +47,7 @@ function CategoriesPieChart({ userID }) {
   };
 
   return (
-    <>
+    <div>
       <Chart
         options={data.options}
         series={data.series}
@@ -55,7 +55,7 @@ function CategoriesPieChart({ userID }) {
         height="100%"
         width="100%"
       />
-    </>
+    </div>
   );
 }
 

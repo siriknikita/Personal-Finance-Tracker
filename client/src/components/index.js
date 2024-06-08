@@ -1,5 +1,4 @@
 import AdminModal from "./AdminModal";
-import GoalTable from "./GoalTable";
 import Header from "./Header";
 import Notification from "./Notification";
 import PieChartSkeleton from "./PieCharts/PieChartSkeleton";
@@ -13,7 +12,6 @@ export {
   AdminModal,
   BehaviourBarChart,
   CategoriesPieChart,
-  GoalTable,
   Header,
   Notification,
   PieChartSkeleton,

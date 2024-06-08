@@ -55,7 +55,7 @@ function TransactionsTable() {
   });
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto overflow-y-scroll">
       <table className="table table-pin-rows table-sm table-md table-lg">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

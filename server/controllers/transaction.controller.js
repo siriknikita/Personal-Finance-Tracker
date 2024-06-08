@@ -1,5 +1,7 @@
 const { Transaction, Category } = require("../models");
 const { budgetController, categoryController } = require("../controllers");
+const moment = require("moment");
+const momentTimezone = require("moment-timezone");
 
 const getTransactionCategoriesIDByUserID = async (userID) => {
   try {
@@ -50,7 +52,9 @@ const getTransactionMoneyByUserID = async (userID) => {
     return transactions.map((transaction) => transaction.dataValues.amount);
   } catch (error) {
     console.log("Error in getTransactionMoneyByUserID controller: " + error);
-    throw new Error("Error in getTransactionMoneyByUserID controller: " + error);
+    throw new Error(
+      "Error in getTransactionMoneyByUserID controller: " + error
+    );
   }
 };
 
@@ -71,6 +75,7 @@ const addTransaction = async (userID, amount, categoryID) => {
       userID,
       categoryID,
       amount,
+      date: moment(new Date()).format("YYYY-MM-DD"),
     });
     return transaction ? true : false;
   } catch (error) {
@@ -206,6 +211,33 @@ const getTotalUsersSpending = async () => {
   }
 };
 
+const getExpenseData = async (userID) => {
+  try {
+    // On the x axis we have the date and on the y axis we have the summary throughout the X day
+    const transactions = await getTransactionsByID(userID);
+    const expenseData = {};
+
+    transactions.forEach((transaction) => {
+      const date = moment(transaction.date).format("YYYY-MM-DD");
+      const timezone = momentTimezone.tz.guess();
+      const formattedDate = moment(date).tz(timezone).format("DD-MM-YYYY z");
+      if (expenseData[formattedDate]) {
+        expenseData[formattedDate] += transaction.amount;
+      } else {
+        expenseData[formattedDate] = transaction.amount;
+      }
+    });
+    
+    return Object.entries(expenseData).map(([date, amount]) => ({
+      "x": date,
+      "y": amount,
+    }));
+  } catch (error) {
+    console.log("Error in getExpenseData controller: " + error);
+    throw new Error("Error in getExpenseData controller: " + error);
+  }
+};
+
 module.exports = {
   getTransactionCategoriesIDByUserID,
   getCategoryNameByID,
@@ -221,4 +253,5 @@ module.exports = {
   getTop5CategoriesFrequencies,
   getTop5CategoriesNames,
   getTotalUsersSpending,
+  getExpenseData,
 };
