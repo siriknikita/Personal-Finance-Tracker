@@ -1,8 +1,8 @@
-## Siryk.University.PersonalFinanceTracker
+## Personal Finance Tracker
 
-Welcome to Siryk University’s Personal Finance Tracker, an app designed to help you efficiently track your personal finances and achieve your financial goals.
+Welcome to Personal Finance Tracker, an app designed to help you efficiently track your personal finances and achieve your financial goals.
 
-[Visit the Personal Finance Tracker]([https://personal-finance-tracker-pft-client.azurewebsites.net](https://siryk-university-personalfinancetracker-1.onrender.com/signup))
+[Visit the Personal Finance Tracker](https://personal-finance-tracker-b6le.onrender.com)
 
 ## Feedback
 
@@ -33,8 +33,8 @@ Before starting, make sure you have:
 Open your preferred command line interface and run the following commands:
 
 ```sh
-git clone https://github.com/siriknikita/Siryk.University.PersonalFinanceTracker-1.git
-cd Siryk.University.PersonalFinanceTracker-1
+git clone https://github.com/siriknikita/Personal-Finance-Tracker.git
+cd Personal-Finance-Tracker
 npm i
 npm start
 ```
@@ -51,7 +51,7 @@ Congratulations! You are now ready to use the application locally.
 
 ## Testing the Application
 
-To enhance the project, the application was deployed and tested on Azure. During testing, bugs were identified and reported through the [feedback form](https://docs.google.com/document/d/1K5PmItaZCPgPM3I89sUCpidnY_o_bC91UvVepshO4PA/edit?usp=sharing).
+To enhance the project, the application was deployed and tested on Azure. During testing, bugs were identified and reported through the feedback form on the website.
 
 ## Post-Deployment Stage
 
@@ -81,8 +81,8 @@ Many users prioritize health-related expenses, making it the most frequently cho
 
 To address this, we plan to:
 
-- Add more intuitive and engaging content.
-- Enhance the health-related features based on user preferences.
+- **🕑 Add more intuitive and engaging content.**
+- **🕑 Enhance the health-related features based on user preferences.**
 
 We hope these improvements will further elevate the user experience and effectiveness of the Personal Finance Tracker. Thank you for your support!
 
@@ -180,7 +180,7 @@ This version should provide a more polished and professional feel to your docume
 
 #### ✔️ Monitor and ensure proper functioning of deployed application.
 
-#### ✔️ [Address any deployment-related issues or errors](https://docs.google.com/document/d/1K5PmItaZCPgPM3I89sUCpidnY_o_bC91UvVepshO4PA/edit?usp=sharing)
+#### ✔️ Address any deployment-related issues or errors
 
 #### ✔️ Verify CI/CD pipeline for automated deployments.
 
@@ -273,11 +273,3 @@ This version should provide a more polished and professional feel to your docume
     -   **Improvement 2**: Regular risk assessment meetings to stay proactive.
 -   **Technical Challenges**:
     -   **Improvement 2**: Regular code reviews and refactoring sessions to maintain code quality and performance.
-
-## ANTILAB 2
-
--   Hulak Mykhailo
--   [Pull request](https://github.com/midjiro/hulak.university.local-news/pull/2)
-
--   Oleh Tysovskyi
--   [Pull request](https://github.com/OlehTysovskyi/Tysovskyi.University.Monobank/pull/2)
