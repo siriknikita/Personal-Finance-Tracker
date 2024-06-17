@@ -75,7 +75,7 @@ Congratulations! You are now ready to use the application locally.
 
 ## Testing the Application
 
-To enhance the project, the application was deployed and tested on Azure. During testing, bugs were identified and reported through the feedback form on the website.
+To enhance the project, the application was deployed and tested on Render.com. During testing, bugs were identified and reported through the feedback form on the website.
 
 ## Post-Deployment Stage
 
@@ -200,7 +200,7 @@ This version should provide a more polished and professional feel to your docume
 
 ### Week 8:
 
-#### ✔️ [Deploy application to Azure platform](https://personal-finance-tracker-pft-client.azurewebsites.net)
+#### ✔️ Deploy application to Render.com platform
 
 #### ✔️ Monitor and ensure proper functioning of deployed application.
 
